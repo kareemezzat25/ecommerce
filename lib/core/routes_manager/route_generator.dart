@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
     switch (settings.name) {
-
       case Routes.cartRoute:
         return MaterialPageRoute(builder: (_) => const CartScreen());
       case Routes.mainRoute:
@@ -26,7 +25,7 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const SignInScreen());
 
       case Routes.signUpRoute:
-        return MaterialPageRoute(builder: (_) => const SignUpScreen());
+        return MaterialPageRoute(builder: (_) => SignUpScreen());
       default:
         return unDefinedRoute();
     }
