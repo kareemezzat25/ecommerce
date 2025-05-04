@@ -1,10 +1,14 @@
 import 'package:ecommerce_app/core/routes_manager/routes.dart';
+import 'package:ecommerce_app/di.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/routes_manager/route_generator.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  configureDependencies();
+
   runApp(const MainApp());
 }
 

@@ -1,10 +1,10 @@
-import 'package:ecommerce_app/core/api/api_manager.dart';
+import 'package:ecommerce_app/core/routes_manager/routes.dart';
 import 'package:ecommerce_app/core/widget/custom_elevated_button.dart';
-import 'package:ecommerce_app/features/auth/data/datasources/remote/auth_remote_dsImpl.dart';
+import 'package:ecommerce_app/di.dart';
 import 'package:ecommerce_app/features/auth/data/models/signuprequestmodel.dart';
-import 'package:ecommerce_app/features/auth/data/repository/auth_repoImpl.dart';
-import 'package:ecommerce_app/features/auth/domain/usecases/signup_usecase.dart';
+
 import 'package:ecommerce_app/features/auth/presentation/bloc/bloc/auth_bloc_bloc.dart';
+import 'package:ecommerce_app/features/main_layout/main_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,11 +28,58 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthBlocBloc(SignupUsecase(AuthRepoImpl(
-          authRemoteDs: AuthRemoteDsImpl(apimanager: ApiManager())))),
+      create: (context) => getIt<AuthBlocBloc>(),
       child: BlocConsumer<AuthBlocBloc, AuthBlocState>(
         listener: (context, state) {
-          // TODO: implement listener
+          if (state.signupRequestState == RequestState.loading) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    backgroundColor: Colors.transparent,
+                    title: Center(
+                      child: CircularProgressIndicator(
+                        color: ColorManager.primary,
+                      ),
+                    ),
+                  );
+                });
+          } else if (state.signupRequestState == RequestState.error) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text(
+                      "Error",
+                      style: getBoldStyle(
+                          color: ColorManager.primary, fontSize: AppSize.s20),
+                    ),
+                    content:
+                        Text(state.failures?.message ?? "SomeThing Went Wrong"),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: ColorManager.primary,
+                              padding: EdgeInsets.all(8),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.r))),
+                          child: Text(
+                            "Ok",
+                            style: getBoldStyle(
+                                color: ColorManager.white,
+                                fontSize: AppSize.s20),
+                          ))
+                    ],
+                  );
+                });
+          } else if (state.signupRequestState == RequestState.success) {
+            Navigator.pushNamedAndRemoveUntil(
+                context, Routes.mainRoute, (route) => false);
+          }
         },
         builder: (context, state) {
           return Scaffold(

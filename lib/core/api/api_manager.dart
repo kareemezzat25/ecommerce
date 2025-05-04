@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:ecommerce_app/core/resources/constants_manager.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton()
 class ApiManager {
   late Dio _dio;
 

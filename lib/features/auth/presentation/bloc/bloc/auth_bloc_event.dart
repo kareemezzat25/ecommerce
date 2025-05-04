@@ -6,3 +6,10 @@ class SignupEvent extends AuthBlocEvent {
   SignupRequestModel signupRequestModel;
   SignupEvent(this.signupRequestModel);
 }
+
+class SigninEvent extends AuthBlocEvent {
+  String email;
+  String password;
+
+  SigninEvent(this.email, this.password);
+}

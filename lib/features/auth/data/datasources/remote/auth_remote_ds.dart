@@ -3,4 +3,5 @@ import 'package:ecommerce_app/features/auth/data/models/signuprequestmodel.dart'
 
 abstract class AuthRemoteDs {
   Future<AuthModel> signup({SignupRequestModel? request});
+  Future<AuthModel> signIn({String? email, String? password});
 }
