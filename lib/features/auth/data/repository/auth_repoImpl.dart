@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:ecommerce_app/core/failures/failures.dart';
 import 'package:ecommerce_app/core/failures/remotefailures.dart';
+import 'package:ecommerce_app/core/resources/app_cache.dart';
 import 'package:ecommerce_app/features/auth/data/datasources/remote/auth_remote_ds.dart';
 import 'package:ecommerce_app/features/auth/data/models/authmodel.dart';
 import 'package:ecommerce_app/features/auth/data/models/signuprequestmodel.dart';
@@ -16,6 +17,7 @@ class AuthRepoImpl implements AuthRepo {
       {required SignupRequestModel request}) async {
     try {
       AuthModel authModel = await authRemoteDs.signup(request: request);
+      AppCache.setToken(authModel.token);
       return Left(authModel);
     } catch (e) {
       return Right(RemoteFailures("Auth Error"));
@@ -27,6 +29,7 @@ class AuthRepoImpl implements AuthRepo {
       {required String email, required String password}) async {
     try {
       var result = await authRemoteDs.signIn(email: email, password: password);
+      AppCache.setToken(result.token);
       return Left(result);
     } catch (e) {
       return Right(RemoteFailures("Auth Error ,${e.toString()}"));

@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/core/resources/app_cache.dart';
 import 'package:ecommerce_app/core/routes_manager/routes.dart';
 import 'package:ecommerce_app/di.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'core/routes_manager/route_generator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AppCache.init();
   configureDependencies();
 
   runApp(const MainApp());
@@ -25,7 +27,8 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: child,
         onGenerateRoute: RouteGenerator.getRoute,
-        initialRoute: Routes.signInRoute,
+        initialRoute:
+            AppCache.getToken() == null ? Routes.signInRoute : Routes.mainRoute,
       ),
     );
   }
