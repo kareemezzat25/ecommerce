@@ -20,7 +20,8 @@ class ApiManager {
         responseBody: true,
         error: true));
   }
-  Future<Response> getData(String endpoint, Map<String, dynamic> query) async {
+  Future<Response> getData(String endpoint,
+      {Map<String, dynamic>? query}) async {
     try {
       return await _dio.get(endpoint, queryParameters: query);
     } on DioError catch (e) {

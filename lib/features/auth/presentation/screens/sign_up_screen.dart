@@ -54,8 +54,10 @@ class SignUpScreen extends StatelessWidget {
                       style: getBoldStyle(
                           color: ColorManager.primary, fontSize: AppSize.s20),
                     ),
-                    content:
-                        Text(state.failures?.message ?? "SomeThing Went Wrong"),
+                    content: Text(
+                      state.failures?.message ?? "SomeThing Went Wrong",
+                      style: getMediumStyle(color: ColorManager.black),
+                    ),
                     actions: [
                       ElevatedButton(
                           onPressed: () {
