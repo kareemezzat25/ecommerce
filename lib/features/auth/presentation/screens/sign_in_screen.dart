@@ -48,7 +48,7 @@ class SignInScreen extends StatelessWidget {
                     title: Text(
                       "Error",
                       style: getBoldStyle(
-                          color: ColorManager.primary, fontSize: AppSize.s20),
+                          color: ColorManager.primary, fontSize: FontSize.s20),
                     ),
                     content:
                         Text(state.failures?.message ?? "SomeThing Went wrong"),
@@ -67,7 +67,7 @@ class SignInScreen extends StatelessWidget {
                             "Ok",
                             style: getBoldStyle(
                                 color: ColorManager.white,
-                                fontSize: AppSize.s20),
+                                fontSize: FontSize.s20),
                           ))
                     ],
                   );
@@ -155,7 +155,7 @@ class SignInScreen extends StatelessWidget {
                             backgroundColor: ColorManager.white,
                             textStyle: getBoldStyle(
                                 color: ColorManager.primary,
-                                fontSize: AppSize.s18),
+                                fontSize: FontSize.s18),
                             onTap: () {
                               BlocProvider.of<AuthBlocBloc>(context).add(
                                   SigninEvent(emailController.text,

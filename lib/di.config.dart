@@ -20,6 +20,16 @@ import 'features/auth/domain/repository/auth_repo.dart' as _i38;
 import 'features/auth/domain/usecases/signin_usecase.dart' as _i925;
 import 'features/auth/domain/usecases/signup_usecase.dart' as _i100;
 import 'features/auth/presentation/bloc/bloc/auth_bloc_bloc.dart' as _i849;
+import 'features/main_layout/categories/data/datasources/remote/categoriesremoteds.dart'
+    as _i352;
+import 'features/main_layout/categories/data/datasources/remote/categoriesremotedsImpl.dart'
+    as _i172;
+import 'features/main_layout/categories/data/repository/subcategoriesrepoImpl.dart'
+    as _i225;
+import 'features/main_layout/categories/domain/repository/subcategoriesrepo.dart'
+    as _i661;
+import 'features/main_layout/categories/domain/usecases/subCategories_usecase.dart'
+    as _i592;
 import 'features/main_layout/categories/presentation/bloc/bloc/categories_bloc_bloc.dart'
     as _i32;
 import 'features/main_layout/home/data/datasources/remote/homeremote_ds.dart'
@@ -47,10 +57,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i237.ApiManager>(() => _i237.ApiManager());
     gh.factory<_i53.AuthRemoteDs>(
         () => _i589.AuthRemoteDsImpl(apimanager: gh<_i237.ApiManager>()));
+    gh.factory<_i352.CategoriesRemoteDs>(
+        () => _i172.CategoriesRemoteDsImpl(gh<_i237.ApiManager>()));
     gh.factory<_i545.HomeRemoteDs>(
         () => _i670.HomeRemoteDsImpl(gh<_i237.ApiManager>()));
     gh.factory<_i118.HomeRepo>(
         () => _i296.HomeRepoImpl(gh<_i545.HomeRemoteDs>()));
+    gh.factory<_i661.SubCategoriesRepo>(
+        () => _i225.SubCategoriesRepoImpl(gh<_i352.CategoriesRemoteDs>()));
     gh.factory<_i38.AuthRepo>(
         () => _i866.AuthRepoImpl(authRemoteDs: gh<_i53.AuthRemoteDs>()));
     gh.factory<_i925.SigninUsecase>(
@@ -63,10 +77,14 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i100.SignupUsecase>(),
           gh<_i925.SigninUsecase>(),
         ));
+    gh.factory<_i592.SubCategoriesUseCase>(
+        () => _i592.SubCategoriesUseCase(gh<_i661.SubCategoriesRepo>()));
     gh.factory<_i981.HomeBloc>(
         () => _i981.HomeBloc(gh<_i133.CategoriesUsecase>()));
-    gh.factory<_i32.CategoriesBlocBloc>(
-        () => _i32.CategoriesBlocBloc(gh<_i133.CategoriesUsecase>()));
+    gh.factory<_i32.CategoriesBlocBloc>(() => _i32.CategoriesBlocBloc(
+          gh<_i133.CategoriesUsecase>(),
+          gh<_i592.SubCategoriesUseCase>(),
+        ));
     return this;
   }
 }

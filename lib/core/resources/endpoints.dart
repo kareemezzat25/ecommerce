@@ -2,4 +2,7 @@ class AppEndpoints {
   static const String signUp = "/api/v1/auth/signup";
   static const String signIn = "/api/v1/auth/signin";
   static const String allCategories = "/api/v1/categories";
+  static String allSubCategoriesOnCategory(String id) {
+    return "/api/v1/categories/$id/subcategories";
+  }
 }

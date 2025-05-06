@@ -9,16 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CategoriesList extends StatefulWidget {
+class CategoriesList extends StatelessWidget {
   const CategoriesList({super.key});
-
-  @override
-  State<CategoriesList> createState() => _CategoriesListState();
-}
-
-class _CategoriesListState extends State<CategoriesList> {
-  // Index of the currently selected category
-  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +30,9 @@ class _CategoriesListState extends State<CategoriesList> {
                 );
               });
         } else if (state.categoriesRequestState == RequestState.success) {
-          Navigator.pop(context);
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context); // <-- this actually closes the dialog
+          }
         } else if (state.categoriesRequestState == RequestState.error) {
           showDialog(
               context: context,
@@ -106,7 +100,7 @@ class _CategoriesListState extends State<CategoriesList> {
               itemBuilder: (context, index) => CategoryItem(
                   index,
                   state.categoriesModel?.data?[index].name ?? "",
-                  selectedIndex == index,
+                  state.selectedIndex == index,
                   onItemClick),
             ),
           ),
@@ -116,9 +110,8 @@ class _CategoriesListState extends State<CategoriesList> {
   }
 
   // callback function to change the selected index
-  onItemClick(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
+  onItemClick(int index, BuildContext context) {
+    BlocProvider.of<CategoriesBlocBloc>(context)
+        .add(ChangeSelectedIndex(index));
   }
 }

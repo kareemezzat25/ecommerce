@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/core/resources/font_manager.dart';
 import 'package:ecommerce_app/core/routes_manager/routes.dart';
 import 'package:ecommerce_app/core/widget/custom_elevated_button.dart';
 import 'package:ecommerce_app/di.dart';
@@ -52,7 +53,7 @@ class SignUpScreen extends StatelessWidget {
                     title: Text(
                       "Error",
                       style: getBoldStyle(
-                          color: ColorManager.primary, fontSize: AppSize.s20),
+                          color: ColorManager.primary, fontSize: FontSize.s20),
                     ),
                     content: Text(
                       state.failures?.message ?? "SomeThing Went Wrong",
@@ -66,14 +67,14 @@ class SignUpScreen extends StatelessWidget {
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: ColorManager.primary,
-                              padding: EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16.r))),
                           child: Text(
                             "Ok",
                             style: getBoldStyle(
                                 color: ColorManager.white,
-                                fontSize: AppSize.s20),
+                                fontSize: FontSize.s20),
                           ))
                     ],
                   );

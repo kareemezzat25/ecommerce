@@ -129,7 +129,6 @@ class _HomeTabState extends State<HomeTab> {
                       child: GridView.builder(
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
-                          print(state.categoriesModel?.data?[index].name ?? "");
                           return CustomCategoryWidget(
                             categoryImage:
                                 state.categoriesModel?.data?[index].image ?? "",
