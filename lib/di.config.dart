@@ -20,6 +20,8 @@ import 'features/auth/domain/repository/auth_repo.dart' as _i38;
 import 'features/auth/domain/usecases/signin_usecase.dart' as _i925;
 import 'features/auth/domain/usecases/signup_usecase.dart' as _i100;
 import 'features/auth/presentation/bloc/bloc/auth_bloc_bloc.dart' as _i849;
+import 'features/main_layout/categories/presentation/bloc/bloc/categories_bloc_bloc.dart'
+    as _i32;
 import 'features/main_layout/home/data/datasources/remote/homeremote_ds.dart'
     as _i545;
 import 'features/main_layout/home/data/datasources/remote/homeremotedsimpl.dart'
@@ -63,6 +65,8 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i981.HomeBloc>(
         () => _i981.HomeBloc(gh<_i133.CategoriesUsecase>()));
+    gh.factory<_i32.CategoriesBlocBloc>(
+        () => _i32.CategoriesBlocBloc(gh<_i133.CategoriesUsecase>()));
     return this;
   }
 }
