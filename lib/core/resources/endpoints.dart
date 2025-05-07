@@ -9,4 +9,6 @@ class AppEndpoints {
   static String specificCategory(String id) {
     return "/api/v1/categories/$id";
   }
+
+  static String getProducts = "/api/v1/products";
 }

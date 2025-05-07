@@ -113,7 +113,6 @@ class CategoriesList extends StatelessWidget {
 
   // callback function to change the selected index
   onItemClick(int index, BuildContext context) {
-    print("kkk:$index");
     BlocProvider.of<CategoriesBlocBloc>(context)
         .add(ChangeSelectedIndex(index));
   }

@@ -130,6 +130,7 @@ class _HomeTabState extends State<HomeTab> {
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return CustomCategoryWidget(
+                            categoryId: state.categoriesModel?.data?[index].sId,
                             categoryImage:
                                 state.categoriesModel?.data?[index].image ?? "",
                             categoryName:

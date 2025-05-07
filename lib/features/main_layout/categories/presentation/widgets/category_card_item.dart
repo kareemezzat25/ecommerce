@@ -27,7 +27,7 @@ class CategoryCardItem extends StatelessWidget {
             // Background image for the category
             CachedNetworkImage(
               width: double.infinity,
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
               imageUrl: image,
               placeholder: (context, url) =>
                   const Center(child: CircularProgressIndicator()),

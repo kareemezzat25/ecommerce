@@ -44,6 +44,18 @@ import 'features/main_layout/home/domain/usecases/categories_usecase.dart'
     as _i133;
 import 'features/main_layout/home/presentation/bloc/bloc/home_bloc.dart'
     as _i981;
+import 'features/products_screen/data/datasources/remote/getproductremoteds.dart'
+    as _i368;
+import 'features/products_screen/data/datasources/remote/getproductremotedsImpl.dart'
+    as _i366;
+import 'features/products_screen/data/repository/getproductrepoImpl.dart'
+    as _i588;
+import 'features/products_screen/domain/repository/getproductsrepo.dart'
+    as _i770;
+import 'features/products_screen/domain/usecases/getproducts_usecase.dart'
+    as _i784;
+import 'features/products_screen/presentation/bloc/bloc/products_bloc.dart'
+    as _i215;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -63,8 +75,12 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i172.CategoriesRemoteDsImpl(gh<_i237.ApiManager>()));
     gh.factory<_i545.HomeRemoteDs>(
         () => _i670.HomeRemoteDsImpl(gh<_i237.ApiManager>()));
+    gh.factory<_i368.GetProductsRemoteDs>(
+        () => _i366.GetProductsRemoteDsImpl(gh<_i237.ApiManager>()));
     gh.factory<_i118.HomeRepo>(
         () => _i296.HomeRepoImpl(gh<_i545.HomeRemoteDs>()));
+    gh.factory<_i770.GetProductRepo>(
+        () => _i588.GetProductRepoImpl(gh<_i368.GetProductsRemoteDs>()));
     gh.factory<_i661.SubCategoriesRepo>(
         () => _i225.SubCategoriesRepoImpl(gh<_i352.CategoriesRemoteDs>()));
     gh.factory<_i38.AuthRepo>(
@@ -73,8 +89,12 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i925.SigninUsecase(gh<_i38.AuthRepo>()));
     gh.factory<_i100.SignupUsecase>(
         () => _i100.SignupUsecase(gh<_i38.AuthRepo>()));
+    gh.factory<_i784.GetProductsUseCase>(
+        () => _i784.GetProductsUseCase(gh<_i770.GetProductRepo>()));
     gh.factory<_i133.CategoriesUsecase>(
         () => _i133.CategoriesUsecase(gh<_i118.HomeRepo>()));
+    gh.factory<_i215.ProductsBloc>(
+        () => _i215.ProductsBloc(gh<_i784.GetProductsUseCase>()));
     gh.factory<_i849.AuthBlocBloc>(() => _i849.AuthBlocBloc(
           gh<_i100.SignupUsecase>(),
           gh<_i925.SigninUsecase>(),
