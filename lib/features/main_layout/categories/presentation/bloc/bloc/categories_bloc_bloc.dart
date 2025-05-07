@@ -5,7 +5,6 @@ import 'package:ecommerce_app/features/main_layout/categories/domain/usecases/su
 import 'package:ecommerce_app/features/main_layout/home/data/models/categories_model.dart';
 import 'package:ecommerce_app/features/main_layout/home/domain/usecases/categories_usecase.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
 
 part 'categories_bloc_event.dart';
 part 'categories_bloc_state.dart';
@@ -42,6 +41,7 @@ class CategoriesBlocBloc
       var result = await subCategoriesUseCase.call(event.id);
 
       result.fold((model) {
+        print("Success");
         emit(state.copyWith(
             subCategoriesOnCategoryRequestState: RequestState.success,
             subCategoriesOnCategoryModel: model));
@@ -53,6 +53,7 @@ class CategoriesBlocBloc
     });
     on<ChangeSelectedIndex>((event, emit) {
       emit(state.copyWith(selectedIndex: event.index));
+      print("in c:${state.selectedIndex}");
       add(GetSubCategoriesOnCategoryEvent(
           state.categoriesModel?.data?[event.index].sId ?? ""));
     });

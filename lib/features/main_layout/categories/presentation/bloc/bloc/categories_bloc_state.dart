@@ -16,7 +16,7 @@ class CategoriesBlocState {
       this.categoriesModel,
       this.subCategoriesOnCategoryFailures,
       this.categoriesFailures,
-      this.selectedIndex});
+      this.selectedIndex = 0});
 
   CategoriesBlocState copyWith(
       {RequestState? categoriesRequestState,

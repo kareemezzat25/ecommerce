@@ -9,7 +9,7 @@ class CategoriesUsecase {
   HomeRepo homeRepo;
   CategoriesUsecase(this.homeRepo);
 
-  Future<Either<CategoriesModel, Failures>> call() {
-    return homeRepo.getCategories();
+  Future<Either<CategoriesModel, Failures>> call() async {
+    return await homeRepo.getCategories();
   }
 }

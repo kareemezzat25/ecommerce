@@ -17,58 +17,58 @@ class SubCategoriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool _isDialogVisible = false;
+
     return BlocConsumer<CategoriesBlocBloc, CategoriesBlocState>(
       listener: (context, state) {
-        if (state.subCategoriesOnCategoryRequestState == RequestState.loading) {
+        if (state.categoriesRequestState == RequestState.loading &&
+            !_isDialogVisible) {
+          _isDialogVisible = true;
           showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  backgroundColor: Colors.transparent,
-                  title: Center(
-                    child: CircularProgressIndicator(
-                      color: ColorManager.primary,
-                    ),
+            context: context,
+            barrierDismissible: false, // prevent auto dismiss
+            builder: (context) {
+              return AlertDialog(
+                backgroundColor: Colors.transparent,
+                title: Center(
+                  child: CircularProgressIndicator(
+                    color: ColorManager.primary,
                   ),
-                );
-              });
-        } else if (state.subCategoriesOnCategoryRequestState ==
-            RequestState.success) {
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context); // <-- this actually closes the dialog
-          }
-        } else if (state.subCategoriesOnCategoryRequestState ==
-            RequestState.error) {
+                ),
+              );
+            },
+          );
+        } else if (state.categoriesRequestState == RequestState.success &&
+            _isDialogVisible) {
+          Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+          _isDialogVisible = false;
+        } else if (state.categoriesRequestState == RequestState.error &&
+            _isDialogVisible) {
+          Navigator.of(context, rootNavigator: true).pop(); // dismiss loading
+          _isDialogVisible = false;
+
           showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(
-                    "Error",
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Error",
                     style: getBoldStyle(
-                        color: ColorManager.primary, fontSize: FontSize.s20),
-                  ),
-                  content: Text(
-                      state.subCategoriesOnCategoryFailures?.message ?? ""),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorManager.primary,
-                            padding: const EdgeInsets.all(8),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.r))),
-                        child: Text(
-                          "Ok",
-                          style: getBoldStyle(
-                              color: ColorManager.white,
-                              fontSize: FontSize.s20),
-                        ))
-                  ],
-                );
-              });
+                        color: ColorManager.primary, fontSize: AppSize.s20)),
+                content: Text(state.categoriesFailures?.message ??
+                    "Something went wrong"),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorManager.primary,
+                    ),
+                    child: Text("OK",
+                        style: getMediumStyle(color: ColorManager.white)),
+                  )
+                ],
+              );
+            },
+          );
         }
       },
       builder: (context, state) {
@@ -95,32 +95,14 @@ class SubCategoriesList extends StatelessWidget {
 
               SliverGrid(
                 delegate: SliverChildBuilderDelegate(
-                  childCount:
-                      (state.subCategoriesOnCategoryModel?.data?.isEmpty ??
-                              true)
-                          ? 1
-                          : state.subCategoriesOnCategoryModel?.data?.length,
+                  childCount: state.subCategoriesOnCategoryModel?.data?.length,
                   (context, index) {
-                    if (state.subCategoriesOnCategoryModel?.data?.isEmpty ??
-                        true) {
-                      // Show a placeholder when no subcategories are found
-                      return Center(
-                        child: Text(
-                          "No subcategories found",
-                          style: getRegularStyle(color: ColorManager.primary),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    } else {
-                      // Show actual subcategory item
-                      final subCategory =
-                          state.subCategoriesOnCategoryModel!.data![index];
-                      return SubCategoryItem(
-                        subCategory.name ?? "",
-                        ImageAssets.categoryCardImage,
-                        goToCategoryProductsListScreen,
-                      );
-                    }
+                    // Show actual subcategory item
+                    return SubCategoryItem(
+                      state.subCategoriesOnCategoryModel?.data?[index].name ??
+                          "",
+                      ImageAssets.categoryCardImage,
+                    );
                   },
                 ),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

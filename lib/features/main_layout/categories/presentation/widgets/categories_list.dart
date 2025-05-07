@@ -14,79 +14,80 @@ class CategoriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool _isDialogVisible = false;
+
     return BlocConsumer<CategoriesBlocBloc, CategoriesBlocState>(
       listener: (context, state) {
-        if (state.categoriesRequestState == RequestState.loading) {
+        if (state.categoriesRequestState == RequestState.loading &&
+            !_isDialogVisible) {
+          _isDialogVisible = true;
           showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  backgroundColor: Colors.transparent,
-                  title: Center(
-                    child: CircularProgressIndicator(
-                      color: ColorManager.primary,
-                    ),
+            context: context,
+            barrierDismissible: false, // prevent auto dismiss
+            builder: (context) {
+              return AlertDialog(
+                backgroundColor: Colors.transparent,
+                title: Center(
+                  child: CircularProgressIndicator(
+                    color: ColorManager.primary,
                   ),
-                );
-              });
-        } else if (state.categoriesRequestState == RequestState.success) {
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context); // <-- this actually closes the dialog
-          }
-        } else if (state.categoriesRequestState == RequestState.error) {
+                ),
+              );
+            },
+          );
+        } else if (state.categoriesRequestState == RequestState.success &&
+            _isDialogVisible) {
+          Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
+          _isDialogVisible = false;
+        } else if (state.categoriesRequestState == RequestState.error &&
+            _isDialogVisible) {
+          Navigator.of(context, rootNavigator: true).pop(); // dismiss loading
+          _isDialogVisible = false;
+
           showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(
-                    "Error",
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Error",
                     style: getBoldStyle(
-                        color: ColorManager.primary, fontSize: AppSize.s20),
-                  ),
-                  content: Text(state.categoriesFailures?.message ??
-                      "SomeThing Went Wrong"),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorManager.primary,
-                            padding: const EdgeInsets.all(8),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.r))),
-                        child: Text(
-                          "Ok",
-                          style: getMediumStyle(
-                              color: ColorManager.white,
-                              fontSize: FontSize.s18),
-                        ))
-                  ],
-                );
-              });
+                        color: ColorManager.primary, fontSize: AppSize.s20)),
+                content: Text(state.categoriesFailures?.message ??
+                    "Something went wrong"),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorManager.primary,
+                    ),
+                    child: Text("OK",
+                        style: getMediumStyle(color: ColorManager.white)),
+                  )
+                ],
+              );
+            },
+          );
         }
       },
       builder: (context, state) {
         return Expanded(
             child: Container(
           decoration: BoxDecoration(
-            color: ColorManager.containerGray,
-            border: Border(
-                // set the border for only 3 sides
-                top: BorderSide(
-                    width: AppSize.s2,
-                    color: ColorManager.primary.withOpacity(0.3)),
-                left: BorderSide(
-                    width: AppSize.s2,
-                    color: ColorManager.primary.withOpacity(0.3)),
-                bottom: BorderSide(
-                    width: AppSize.s2,
-                    color: ColorManager.primary.withOpacity(0.3))),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(AppSize.s12),
-              bottomLeft: Radius.circular(AppSize.s12),
-            ),
-          ),
+              color: ColorManager.containerGray,
+              border: Border(
+                  // set the border for only 3 sides
+                  top: BorderSide(
+                      width: AppSize.s2,
+                      color: ColorManager.primary.withOpacity(0.3)),
+                  left: BorderSide(
+                      width: AppSize.s2,
+                      color: ColorManager.primary.withOpacity(0.3)),
+                  bottom: BorderSide(
+                      width: AppSize.s2,
+                      color: ColorManager.primary.withOpacity(0.3))),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(AppSize.s12),
+                bottomLeft: Radius.circular(AppSize.s12),
+              )),
 
           // the categories items list
           child: ClipRRect(
@@ -111,6 +112,7 @@ class CategoriesList extends StatelessWidget {
 
   // callback function to change the selected index
   onItemClick(int index, BuildContext context) {
+    print("kkk:$index");
     BlocProvider.of<CategoriesBlocBloc>(context)
         .add(ChangeSelectedIndex(index));
   }
