@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:ecommerce_app/core/failures/failures.dart';
 import 'package:ecommerce_app/features/auth/presentation/bloc/bloc/auth_bloc_bloc.dart';
+import 'package:ecommerce_app/features/main_layout/categories/data/models/specificCategorymodel.dart';
+import 'package:ecommerce_app/features/main_layout/categories/domain/usecases/specificcategory_usecase.dart';
 import 'package:ecommerce_app/features/main_layout/categories/domain/usecases/subCategories_usecase.dart';
 import 'package:ecommerce_app/features/main_layout/home/data/models/categories_model.dart';
 import 'package:ecommerce_app/features/main_layout/home/domain/usecases/categories_usecase.dart';
@@ -14,7 +16,9 @@ class CategoriesBlocBloc
     extends Bloc<CategoriesBlocEvent, CategoriesBlocState> {
   CategoriesUsecase categoriesUsecase;
   SubCategoriesUseCase subCategoriesUseCase;
-  CategoriesBlocBloc(this.categoriesUsecase, this.subCategoriesUseCase)
+  SpecificCategoryUseCase specificCategoryUseCase;
+  CategoriesBlocBloc(this.categoriesUsecase, this.subCategoriesUseCase,
+      this.specificCategoryUseCase)
       : super(CategoriesBlocInitial()) {
     on<CategoriesBlocEvent>((event, emit) {
       // TODO: implement event handler
@@ -27,6 +31,7 @@ class CategoriesBlocBloc
         emit(state.copyWith(
             categoriesRequestState: RequestState.success,
             categoriesModel: model));
+        add(GetSpecificCategory(model.data?.first.sId ?? ""));
         add(GetSubCategoriesOnCategoryEvent(model.data?.first.sId ?? ""));
       }, (error) {
         emit(state.copyWith(
@@ -41,7 +46,6 @@ class CategoriesBlocBloc
       var result = await subCategoriesUseCase.call(event.id);
 
       result.fold((model) {
-        print("Success");
         emit(state.copyWith(
             subCategoriesOnCategoryRequestState: RequestState.success,
             subCategoriesOnCategoryModel: model));
@@ -51,9 +55,23 @@ class CategoriesBlocBloc
             subCategoriesOnCategoryFailures: error));
       });
     });
+    on<GetSpecificCategory>((event, emit) async {
+      emit(state.copyWith(specificCategoryRequestState: RequestState.loading));
+      var result = await specificCategoryUseCase.call(event.id);
+      result.fold((model) {
+        emit(state.copyWith(
+            specificCategoryRequestState: RequestState.success,
+            specificCategoryModel: model));
+      }, (error) {
+        emit(state.copyWith(
+            specificCategoryRequestState: RequestState.error,
+            specificCategoryFailures: error));
+      });
+    });
     on<ChangeSelectedIndex>((event, emit) {
       emit(state.copyWith(selectedIndex: event.index));
-      print("in c:${state.selectedIndex}");
+      add(GetSpecificCategory(
+          state.categoriesModel?.data?[event.index].sId ?? ""));
       add(GetSubCategoriesOnCategoryEvent(
           state.categoriesModel?.data?[event.index].sId ?? ""));
     });

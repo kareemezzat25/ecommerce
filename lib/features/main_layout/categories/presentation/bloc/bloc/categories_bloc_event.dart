@@ -13,3 +13,8 @@ class ChangeSelectedIndex extends CategoriesBlocEvent {
   int index;
   ChangeSelectedIndex(this.index);
 }
+
+class GetSpecificCategory extends CategoriesBlocEvent {
+  String id;
+  GetSpecificCategory(this.id);
+}

@@ -28,6 +28,8 @@ import 'features/main_layout/categories/data/repository/subcategoriesrepoImpl.da
     as _i225;
 import 'features/main_layout/categories/domain/repository/subcategoriesrepo.dart'
     as _i661;
+import 'features/main_layout/categories/domain/usecases/specificcategory_usecase.dart'
+    as _i597;
 import 'features/main_layout/categories/domain/usecases/subCategories_usecase.dart'
     as _i592;
 import 'features/main_layout/categories/presentation/bloc/bloc/categories_bloc_bloc.dart'
@@ -79,12 +81,15 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i592.SubCategoriesUseCase>(
         () => _i592.SubCategoriesUseCase(gh<_i661.SubCategoriesRepo>()));
-    gh.factory<_i981.HomeBloc>(
-        () => _i981.HomeBloc(gh<_i133.CategoriesUsecase>()));
+    gh.factory<_i597.SpecificCategoryUseCase>(
+        () => _i597.SpecificCategoryUseCase(gh<_i661.SubCategoriesRepo>()));
     gh.factory<_i32.CategoriesBlocBloc>(() => _i32.CategoriesBlocBloc(
           gh<_i133.CategoriesUsecase>(),
           gh<_i592.SubCategoriesUseCase>(),
+          gh<_i597.SpecificCategoryUseCase>(),
         ));
+    gh.factory<_i981.HomeBloc>(
+        () => _i981.HomeBloc(gh<_i133.CategoriesUsecase>()));
     return this;
   }
 }

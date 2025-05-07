@@ -17,13 +17,13 @@ class SubCategoriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool _isDialogVisible = false;
+    bool isDialogVisible = false;
 
     return BlocConsumer<CategoriesBlocBloc, CategoriesBlocState>(
       listener: (context, state) {
         if (state.categoriesRequestState == RequestState.loading &&
-            !_isDialogVisible) {
-          _isDialogVisible = true;
+            !isDialogVisible) {
+          isDialogVisible = true;
           showDialog(
             context: context,
             barrierDismissible: false, // prevent auto dismiss
@@ -39,13 +39,13 @@ class SubCategoriesList extends StatelessWidget {
             },
           );
         } else if (state.categoriesRequestState == RequestState.success &&
-            _isDialogVisible) {
+            isDialogVisible) {
           Navigator.of(context, rootNavigator: true).pop(); // dismiss dialog
-          _isDialogVisible = false;
+          isDialogVisible = false;
         } else if (state.categoriesRequestState == RequestState.error &&
-            _isDialogVisible) {
+            isDialogVisible) {
           Navigator.of(context, rootNavigator: true).pop(); // dismiss loading
-          _isDialogVisible = false;
+          isDialogVisible = false;
 
           showDialog(
             context: context,
@@ -60,6 +60,8 @@ class SubCategoriesList extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.r)),
                       backgroundColor: ColorManager.primary,
                     ),
                     child: Text("OK",
@@ -77,20 +79,39 @@ class SubCategoriesList extends StatelessWidget {
           child: CustomScrollView(
             slivers: <Widget>[
               // category title
+              // Title with BlocConsumer
               SliverToBoxAdapter(
-                child: Text(
-                  'Laptops & Electronics',
-                  style: getBoldStyle(
-                      color: ColorManager.primary, fontSize: FontSize.s14),
+                child: BlocConsumer<CategoriesBlocBloc, CategoriesBlocState>(
+                  listener: (context, state) {
+                    // handle listener if needed (optional for title)
+                  },
+                  builder: (context, state) {
+                    return Text(
+                      state.specificCategoryModel?.data?.name ?? "",
+                      style: getBoldStyle(
+                        color: ColorManager.primary,
+                        fontSize: FontSize.s14,
+                      ),
+                    );
+                  },
                 ),
               ),
-              // the category card
+
               SliverToBoxAdapter(
-                child: CategoryCardItem(
-                    "Laptops & Electronics",
-                    ImageAssets.categoryCardImage,
-                    goToCategoryProductsListScreen),
+                child: BlocConsumer<CategoriesBlocBloc, CategoriesBlocState>(
+                  listener: (context, state) {
+                    // handle listener if needed (optional)
+                  },
+                  builder: (context, state) {
+                    return CategoryCardItem(
+                      state.specificCategoryModel?.data?.name ?? "",
+                      state.specificCategoryModel?.data?.image ?? "",
+                      goToCategoryProductsListScreen,
+                    );
+                  },
+                ),
               ),
+
               // the grid view of the subcategories
 
               SliverGrid(

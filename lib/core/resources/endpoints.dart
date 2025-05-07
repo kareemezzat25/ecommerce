@@ -5,4 +5,8 @@ class AppEndpoints {
   static String allSubCategoriesOnCategory(String id) {
     return "/api/v1/categories/$id/subcategories";
   }
+
+  static String specificCategory(String id) {
+    return "/api/v1/categories/$id";
+  }
 }

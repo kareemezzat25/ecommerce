@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:ecommerce_app/core/failures/failures.dart';
 import 'package:ecommerce_app/core/failures/remotefailures.dart';
 import 'package:ecommerce_app/features/main_layout/categories/data/datasources/remote/categoriesremoteds.dart';
+import 'package:ecommerce_app/features/main_layout/categories/data/models/specificCategorymodel.dart';
 import 'package:ecommerce_app/features/main_layout/categories/domain/repository/subcategoriesrepo.dart';
 import 'package:ecommerce_app/features/main_layout/home/data/models/categories_model.dart';
 import 'package:injectable/injectable.dart';
@@ -19,6 +20,18 @@ class SubCategoriesRepoImpl extends SubCategoriesRepo {
     } catch (e) {
       return Right(RemoteFailures(
           "SomeThing went Wrong when Fetch Data of SubCategories"));
+    }
+  }
+
+  @override
+  Future<Either<SpecificCategoryModel, Failures>> getSpecificCategory(
+      {required String id}) async {
+    try {
+      var result = await categoriesRemoteDs.getSpecificCategory(id);
+      return Left(result);
+    } catch (e) {
+      return Right(RemoteFailures(
+          "SomeThing Went Wrong whe Fetch Data of The Category"));
     }
   }
 }
