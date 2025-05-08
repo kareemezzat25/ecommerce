@@ -44,6 +44,18 @@ import 'features/main_layout/home/domain/usecases/categories_usecase.dart'
     as _i133;
 import 'features/main_layout/home/presentation/bloc/bloc/home_bloc.dart'
     as _i981;
+import 'features/product_details/data/datasources/remote/productdetailsremoteds.dart'
+    as _i452;
+import 'features/product_details/data/datasources/remote/productdetailsremotedsImpl.dart'
+    as _i297;
+import 'features/product_details/data/repository/productdetailsrepoImpl.dart'
+    as _i416;
+import 'features/product_details/domain/repository/productdetailsrepo.dart'
+    as _i798;
+import 'features/product_details/domain/usecases/productdetails_usecase.dart'
+    as _i813;
+import 'features/product_details/presentation/bloc/bloc/product_details_bloc.dart'
+    as _i102;
 import 'features/products_screen/data/datasources/remote/getproductremoteds.dart'
     as _i368;
 import 'features/products_screen/data/datasources/remote/getproductremotedsImpl.dart'
@@ -79,6 +91,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i366.GetProductsRemoteDsImpl(gh<_i237.ApiManager>()));
     gh.factory<_i118.HomeRepo>(
         () => _i296.HomeRepoImpl(gh<_i545.HomeRemoteDs>()));
+    gh.factory<_i452.ProductDetailsRemoteDs>(
+        () => _i297.ProductDetailsRemoteDsImpl(gh<_i237.ApiManager>()));
     gh.factory<_i770.GetProductRepo>(
         () => _i588.GetProductRepoImpl(gh<_i368.GetProductsRemoteDs>()));
     gh.factory<_i661.SubCategoriesRepo>(
@@ -89,12 +103,16 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i925.SigninUsecase(gh<_i38.AuthRepo>()));
     gh.factory<_i100.SignupUsecase>(
         () => _i100.SignupUsecase(gh<_i38.AuthRepo>()));
+    gh.factory<_i798.ProductDetailsRepo>(
+        () => _i416.ProductDetailsRepoImpl(gh<_i452.ProductDetailsRemoteDs>()));
     gh.factory<_i784.GetProductsUseCase>(
         () => _i784.GetProductsUseCase(gh<_i770.GetProductRepo>()));
     gh.factory<_i133.CategoriesUsecase>(
         () => _i133.CategoriesUsecase(gh<_i118.HomeRepo>()));
     gh.factory<_i215.ProductsBloc>(
         () => _i215.ProductsBloc(gh<_i784.GetProductsUseCase>()));
+    gh.factory<_i813.ProductDetailsUseCase>(
+        () => _i813.ProductDetailsUseCase(gh<_i798.ProductDetailsRepo>()));
     gh.factory<_i849.AuthBlocBloc>(() => _i849.AuthBlocBloc(
           gh<_i100.SignupUsecase>(),
           gh<_i925.SigninUsecase>(),
@@ -103,6 +121,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i592.SubCategoriesUseCase(gh<_i661.SubCategoriesRepo>()));
     gh.factory<_i597.SpecificCategoryUseCase>(
         () => _i597.SpecificCategoryUseCase(gh<_i661.SubCategoriesRepo>()));
+    gh.factory<_i102.ProductDetailsBloc>(
+        () => _i102.ProductDetailsBloc(gh<_i813.ProductDetailsUseCase>()));
     gh.factory<_i32.CategoriesBlocBloc>(() => _i32.CategoriesBlocBloc(
           gh<_i133.CategoriesUsecase>(),
           gh<_i592.SubCategoriesUseCase>(),

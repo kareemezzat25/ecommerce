@@ -10,7 +10,6 @@ class GetProductsUseCase {
   GetProductsUseCase(this.getProductRepo);
 
   Future<Either<ProductModel, Failures>> call({String? id}) {
-    print("GGGGGG: $id");
     return getProductRepo.getProducts(id: id);
   }
 }

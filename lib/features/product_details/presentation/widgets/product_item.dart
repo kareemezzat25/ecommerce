@@ -11,12 +11,15 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: imageUrl,
+      placeholder: (context, url) =>
+          const Center(child: CircularProgressIndicator()),
+      errorWidget: (context, url, error) => const Icon(Icons.error),
       imageBuilder: (context, image) => Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         height: 300.h,
         decoration: BoxDecoration(
-          image: DecorationImage(image: image, fit: BoxFit.cover),
+          image: DecorationImage(image: image, fit: BoxFit.fill),
           borderRadius: BorderRadius.circular(15.r),
         ),
         alignment: Alignment.topRight,

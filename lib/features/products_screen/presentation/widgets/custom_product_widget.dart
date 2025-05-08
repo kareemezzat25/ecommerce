@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_app/core/resources/color_manager.dart';
 import 'package:ecommerce_app/core/resources/styles_manager.dart';
-import 'package:ecommerce_app/core/routes_manager/routes.dart';
 import 'package:ecommerce_app/core/widget/heart_button.dart';
+import 'package:ecommerce_app/features/product_details/presentation/screen/product_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,18 +15,19 @@ class CustomProductWidget extends StatelessWidget {
   final double price;
   final double priceAfterDiscount;
   final double rating;
+  final String productId;
 
-  const CustomProductWidget({
-    super.key,
-    required this.width,
-    required this.height,
-    required this.image,
-    required this.title,
-    required this.description,
-    required this.price,
-    required this.priceAfterDiscount,
-    required this.rating,
-  });
+  const CustomProductWidget(
+      {super.key,
+      required this.width,
+      required this.height,
+      required this.image,
+      required this.title,
+      required this.description,
+      required this.price,
+      required this.priceAfterDiscount,
+      required this.rating,
+      required this.productId});
 
   String truncateTitle(String title) {
     List<String> words = title.split(' ');
@@ -49,7 +50,12 @@ class CustomProductWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, Routes.productDetails),
+      onTap: () =>
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        return ProductDetails(
+          productId: productId,
+        );
+      })),
       child: Container(
         width: width * 0.4,
         height: height * 0.4,
