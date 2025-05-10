@@ -13,5 +13,3 @@ class RemoveProductCartEvent extends CartEvent {
   String productId;
   RemoveProductCartEvent(this.productId);
 }
-
-class ResetRemoveProductCartState extends CartEvent {}

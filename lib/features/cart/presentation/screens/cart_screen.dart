@@ -20,10 +20,10 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  bool _dialogIsOpen = false;
+  bool _isDialogVisible = false;
 
   void _showLoadingDialog() {
-    _dialogIsOpen = true;
+    _isDialogVisible = true;
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -37,9 +37,9 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   void _closeDialogIfOpen() {
-    if (_dialogIsOpen && Navigator.canPop(context)) {
+    if (_isDialogVisible && Navigator.canPop(context)) {
       Navigator.pop(context);
-      _dialogIsOpen = false;
+      _isDialogVisible = false;
     }
   }
 
@@ -49,59 +49,109 @@ class _CartScreenState extends State<CartScreen> {
       create: (context) => getIt<CartBloc>()..add(GetCartProductsEvent()),
       child: BlocConsumer<CartBloc, CartState>(
         listener: (context, state) {
-          if (state.getCartProductsRequestState == RequestState.loading) {
+          final isLoading =
+              state.getCartProductsRequestState == RequestState.loading ||
+                  state.removeProductCartRequestState == RequestState.loading;
+
+          final isDone =
+              state.getCartProductsRequestState != RequestState.loading &&
+                  state.removeProductCartRequestState != RequestState.loading;
+
+          if (isLoading && !_isDialogVisible) {
             _showLoadingDialog();
-          } else if (state.getCartProductsRequestState ==
-              RequestState.success) {
+          } else if (isDone && _isDialogVisible) {
             _closeDialogIfOpen();
-          } else if (state.getCartProductsRequestState == RequestState.error) {
-            _closeDialogIfOpen();
-            // show error dialog...
           }
 
-          // Remove product logic
-          if (state.removeProductCartRequestState == RequestState.loading) {
-            _showLoadingDialog();
-          } else if (state.removeProductCartRequestState ==
-              RequestState.success) {
-            _closeDialogIfOpen();
-            showDialog(
+          // Handle specific success
+          if (state.removeProductCartRequestState == RequestState.success) {
+            if (state.getCartProductsRequestState == RequestState.loading ||
+                state.removeProductCartRequestState == RequestState.loading) {
+              if (!_isDialogVisible) {
+                _showLoadingDialog();
+              }
+            }
+            // Handle success states and close dialog
+            else if (state.getCartProductsRequestState ==
+                    RequestState.success ||
+                state.removeProductCartRequestState == RequestState.success) {
+              if (_isDialogVisible) {
+                _closeDialogIfOpen();
+              }
+
+              // Show dialog when a product is removed from the cart
+              if (state.removeProductCartRequestState == RequestState.success) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Product Removed",
+                          style: getBoldStyle(
+                              color: ColorManager.primary,
+                              fontSize: FontSize.s20)),
+                      content: Text("Item removed from Cart successfully",
+                          style: getMediumStyle(color: ColorManager.black)),
+                      actions: [
+                        ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: ColorManager.primary,
+                            padding: const EdgeInsets.all(8),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.r)),
+                          ),
+                          child: Text("Ok",
+                              style: getBoldStyle(
+                                  color: ColorManager.white,
+                                  fontSize: AppSize.s20)),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            }
+            // Handle error states
+            else if (state.getCartProductsRequestState == RequestState.error ||
+                state.removeProductCartRequestState == RequestState.error) {
+              if (_isDialogVisible) {
+                _closeDialogIfOpen();
+              }
+
+              showDialog(
                 context: context,
                 builder: (context) {
                   return AlertDialog(
                     title: Text(
-                      "Product Removed",
+                      "Error",
                       style: getBoldStyle(
-                        color: ColorManager.primary,
-                        fontSize: FontSize.s20,
-                      ),
+                          color: ColorManager.primary, fontSize: AppSize.s20),
                     ),
                     content: Text(
-                      "Item remove from Cart Successfully",
+                      state.getCartProductsFailure?.message ??
+                          "Something went wrong",
                       style: getMediumStyle(color: ColorManager.black),
                     ),
                     actions: [
                       ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorManager.primary,
-                              padding: EdgeInsets.all(8),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.r))),
-                          child: Text(
-                            "Ok",
-                            style: getBoldStyle(
-                                color: ColorManager.white,
-                                fontSize: AppSize.s20),
-                          ))
+                        onPressed: () => Navigator.pop(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorManager.primary,
+                          padding: const EdgeInsets.all(8),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.r)),
+                        ),
+                        child: Text(
+                          "Ok",
+                          style: getBoldStyle(
+                              color: ColorManager.white, fontSize: AppSize.s20),
+                        ),
+                      ),
                     ],
                   );
-                });
-          } else if (state.removeProductCartRequestState ==
-              RequestState.error) {
-            _closeDialogIfOpen();
+                },
+              );
+            }
           }
         },
         builder: (context, state) {

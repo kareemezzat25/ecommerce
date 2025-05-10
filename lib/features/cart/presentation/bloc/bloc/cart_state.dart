@@ -12,10 +12,10 @@ class CartState {
   Failures? removeProductCartFailures;
 
   CartState(
-      {this.addToCartResponseModel,
-      this.getCartProductsRequestState,
+      {this.getCartProductsRequestState,
       this.removeProductCartRequestState,
       this.addToCartRequestState,
+      this.addToCartResponseModel,
       this.getCartProductsResponseModel,
       this.removeProductCartResponseModel,
       this.addToCartFailures,
@@ -41,12 +41,12 @@ class CartState {
         addToCartResponseModel:
             addToCartResponseModel ?? this.addToCartResponseModel,
         getCartProductsResponseModel:
-            getCartProductsResponseModel ?? this.addToCartResponseModel,
+            getCartProductsResponseModel ?? this.getCartProductsResponseModel,
         removeProductCartResponseModel: removeProductCartResponseModel ??
             this.removeProductCartResponseModel,
         addToCartFailures: addToCartFailures ?? this.addToCartFailures,
         getCartProductsFailure:
-            getCartProductsFailure ?? this.addToCartFailures,
+            getCartProductsFailure ?? this.getCartProductsFailure,
         removeProductCartFailures:
             removeProductCartFailures ?? this.removeProductCartFailures);
   }

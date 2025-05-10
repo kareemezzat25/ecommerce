@@ -20,7 +20,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     });
     on<GetProductsEvent>((event, emit) async {
       emit(state.copywith(getProductRequestState: RequestState.loading));
-      log("hhhhhhh:${event.categoryId}");
       var result = await getProductsUseCase.call(id: event.categoryId);
 
       result.fold((model) {

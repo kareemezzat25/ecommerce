@@ -55,11 +55,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
           await removeProductFromCartUseCase.call(productId: event.productId);
 
       result.fold((model) {
-        add(GetCartProductsEvent());
-
         emit(state.copyWith(
             removeProductCartRequestState: RequestState.success,
             removeProductCartResponseModel: model));
+        add(GetCartProductsEvent());
       }, (error) {
         emit(state.copyWith(
             removeProductCartRequestState: RequestState.error,
