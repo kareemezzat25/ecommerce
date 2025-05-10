@@ -19,4 +19,16 @@ class CartRemoteDsImpl extends CartRemoteDs {
 
     return cartResponseModel;
   }
+
+  @override
+  Future<CartResponseModel> getCartProducts() async {
+    String? token = AppCache.getToken();
+    var result =
+        await apiManager.getData(AppEndpoints.cart, headers: {"token": token});
+
+    CartResponseModel cartResponseModel =
+        CartResponseModel.fromJson(result.data);
+
+    return cartResponseModel;
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_app/core/resources/assets_manager.dart';
 import 'package:ecommerce_app/core/resources/color_manager.dart';
 import 'package:ecommerce_app/core/resources/styles_manager.dart';
@@ -27,7 +28,7 @@ class CartItemWidget extends StatelessWidget {
   final Color color;
   final String colorName;
   final int size;
-  final int price;
+  final double price;
   final void Function() onDeleteTap;
   final int quantity;
   final void Function(int value) onIncrementTap;
@@ -54,11 +55,15 @@ class CartItemWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(15.r),
               border: Border.all(color: ColorManager.primary.withOpacity(0.3)),
             ),
-            child: Image.asset(
-              imagePath,
+            child: CachedNetworkImage(
+              imageUrl: imagePath,
               fit: BoxFit.cover,
               height: isPortrait ? height * 0.142 : height * 0.23,
               width: isPortrait ? width * 0.29 : 165.w,
+              placeholder: (context, url) =>
+                  const Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) =>
+                  const Center(child: Icon(Icons.error)),
             ),
           ),
           // SizedBox(width: 8.w),

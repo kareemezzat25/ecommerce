@@ -21,4 +21,14 @@ class CartRepoImpl extends CartRepo {
           "SomeThing Went Wrong When Fetch Add Product in Cart"));
     }
   }
+
+  Future<Either<CartResponseModel, Failures>> getCartProducts() async {
+    try {
+      var result = await cartRemoteDs.getCartProducts();
+      return Left(result);
+    } catch (e) {
+      return Right(RemoteFailures(
+          "SomeThing Went Wrong When Fetch Products That Exist In Cart"));
+    }
+  }
 }

@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class TotalPriceAndCheckoutBotton extends StatelessWidget {
   const TotalPriceAndCheckoutBotton(
       {super.key, required this.totalPrice, required this.checkoutButtonOnTap});
-  final int totalPrice;
+  final double totalPrice;
   final void Function() checkoutButtonOnTap;
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class TotalPriceAndCheckoutBotton extends StatelessWidget {
             ),
             SizedBox(height: 4.h),
             SizedBox(
-              width: 90.w,
+              width: 130.w,
               child: Text(
                 'EGP $totalPrice',
                 maxLines: 1,
