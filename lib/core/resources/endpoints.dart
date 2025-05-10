@@ -15,4 +15,6 @@ class AppEndpoints {
   static String productDetails(String id) {
     return "/api/v1/products/$id";
   }
+
+  static String cart = "/api/v1/cart";
 }

@@ -29,9 +29,11 @@ class ApiManager {
     }
   }
 
-  Future<Response> postData(String endpoint, Map<String, dynamic> body) async {
+  Future<Response> postData(String endpoint, Map<String, dynamic> body,
+      {Map<String, dynamic>? headers}) async {
     try {
-      return await _dio.post(endpoint, data: body);
+      return await _dio.post(endpoint,
+          data: body, options: Options(headers: headers));
     } on DioError catch (e) {
       throw Exception("Failed to Post:$e");
     }

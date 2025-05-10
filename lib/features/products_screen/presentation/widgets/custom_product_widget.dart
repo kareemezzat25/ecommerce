@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_app/core/resources/color_manager.dart';
 import 'package:ecommerce_app/core/resources/styles_manager.dart';
 import 'package:ecommerce_app/core/widget/heart_button.dart';
+import 'package:ecommerce_app/features/cart/presentation/bloc/bloc/cart_bloc.dart';
 import 'package:ecommerce_app/features/product_details/presentation/screen/product_details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomProductWidget extends StatelessWidget {
@@ -178,7 +180,10 @@ class CustomProductWidget extends StatelessWidget {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(100),
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              BlocProvider.of<CartBloc>(context)
+                                  .add(AddToCartEvent(productId));
+                            },
                             child: Container(
                               height: height * 0.036,
                               width: width * 0.08,

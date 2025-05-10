@@ -4,6 +4,7 @@ import 'package:ecommerce_app/core/resources/styles_manager.dart';
 import 'package:ecommerce_app/core/resources/values_manager.dart';
 import 'package:ecommerce_app/di.dart';
 import 'package:ecommerce_app/features/auth/presentation/bloc/bloc/auth_bloc_bloc.dart';
+import 'package:ecommerce_app/features/cart/presentation/bloc/bloc/cart_bloc.dart';
 import 'package:ecommerce_app/features/products_screen/presentation/bloc/bloc/products_bloc.dart';
 import 'package:ecommerce_app/features/products_screen/presentation/widgets/custom_product_widget.dart';
 import 'package:flutter/material.dart';
@@ -93,27 +94,32 @@ class ProductsScreen extends StatelessWidget {
                         childAspectRatio: 7 / 9,
                       ),
                       itemBuilder: (context, index) {
-                        return CustomProductWidget(
-                          image:
-                              state.productModel?.data?[index].imageCover ?? "",
-                          title: state.productModel?.data?[index].title ?? "",
-                          price: (state.productModel?.data?[index]
-                                      .priceAfterDiscount ??
-                                  0)
-                              .toDouble(),
-                          rating:
-                              state.productModel?.data?[index].ratingsAverage ??
-                                  0,
-                          priceAfterDiscount: double.parse(
-                              (state.productModel?.data?[index].price)
-                                      .toString() ??
-                                  "0.0"),
-                          height: height,
-                          width: width,
-                          description:
-                              state.productModel?.data?[index].description ??
-                                  "",
-                          productId: state.productModel?.data?[index].id ?? "",
+                        return BlocProvider(
+                          create: (context) => getIt<CartBloc>(),
+                          child: CustomProductWidget(
+                            image:
+                                state.productModel?.data?[index].imageCover ??
+                                    "",
+                            title: state.productModel?.data?[index].title ?? "",
+                            price: (state.productModel?.data?[index]
+                                        .priceAfterDiscount ??
+                                    0)
+                                .toDouble(),
+                            rating: state.productModel?.data?[index]
+                                    .ratingsAverage ??
+                                0,
+                            priceAfterDiscount: double.parse(
+                                (state.productModel?.data?[index].price)
+                                        .toString() ??
+                                    "0.0"),
+                            height: height,
+                            width: width,
+                            description:
+                                state.productModel?.data?[index].description ??
+                                    "",
+                            productId:
+                                state.productModel?.data?[index].id ?? "",
+                          ),
                         );
                       },
                       scrollDirection: Axis.vertical,
