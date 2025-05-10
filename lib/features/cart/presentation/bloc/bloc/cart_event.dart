@@ -8,3 +8,10 @@ class AddToCartEvent extends CartEvent {
 }
 
 class GetCartProductsEvent extends CartEvent {}
+
+class RemoveProductCartEvent extends CartEvent {
+  String productId;
+  RemoveProductCartEvent(this.productId);
+}
+
+class ResetRemoveProductCartState extends CartEvent {}

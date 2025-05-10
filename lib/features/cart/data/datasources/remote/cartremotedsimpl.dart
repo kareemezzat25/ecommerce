@@ -31,4 +31,18 @@ class CartRemoteDsImpl extends CartRemoteDs {
 
     return cartResponseModel;
   }
+
+  @override
+  Future<CartResponseModel> removeProductFromCart(
+      {required String productId}) async {
+    var token = AppCache.getToken();
+
+    var result = await apiManager.deleteData(
+        AppEndpoints.removeItemFromCart(productId), {"token": token});
+
+    CartResponseModel cartResponseModel =
+        CartResponseModel.fromJson(result.data);
+
+    return cartResponseModel;
+  }
 }

@@ -140,16 +140,18 @@ class CustomProductWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "EGP $price",
+                            "EGP ${price == 0 ? priceAfterDiscount : price}",
                             style: getRegularStyle(
                               color: ColorManager.textColor,
                               fontSize: 14.sp,
                             ),
                           ),
-                          Text(
-                            "$priceAfterDiscount",
-                            style: getTextWithLine(),
-                          ),
+                          price == 0
+                              ? const SizedBox()
+                              : Text(
+                                  "$priceAfterDiscount",
+                                  style: getTextWithLine(),
+                                ),
                         ],
                       ),
                     ),

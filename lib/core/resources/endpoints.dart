@@ -17,4 +17,7 @@ class AppEndpoints {
   }
 
   static String cart = "/api/v1/cart";
+  static String removeItemFromCart(String productId) {
+    return "/api/v1/cart/$productId";
+  }
 }

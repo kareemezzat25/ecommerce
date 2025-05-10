@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:ecommerce_app/core/api/api_manager.dart';
 import 'package:ecommerce_app/core/failures/failures.dart';
 import 'package:ecommerce_app/core/failures/remotefailures.dart';
 import 'package:ecommerce_app/features/cart/data/datasources/remote/cartremoteds.dart';
@@ -22,6 +23,7 @@ class CartRepoImpl extends CartRepo {
     }
   }
 
+  @override
   Future<Either<CartResponseModel, Failures>> getCartProducts() async {
     try {
       var result = await cartRemoteDs.getCartProducts();
@@ -29,6 +31,20 @@ class CartRepoImpl extends CartRepo {
     } catch (e) {
       return Right(RemoteFailures(
           "SomeThing Went Wrong When Fetch Products That Exist In Cart"));
+    }
+  }
+
+  @override
+  Future<Either<CartResponseModel, Failures>> removeProductFromCart(
+      {required String productId}) async {
+    try {
+      var result =
+          await cartRemoteDs.removeProductFromCart(productId: productId);
+
+      return Left(result);
+    } catch (e) {
+      return Right(
+          RemoteFailures("SomeThing Went Wrong When Remove Product From Cart"));
     }
   }
 }

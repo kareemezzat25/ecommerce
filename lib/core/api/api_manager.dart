@@ -39,4 +39,13 @@ class ApiManager {
       throw Exception("Failed to Post:$e");
     }
   }
+
+  Future<Response> deleteData(
+      String endpoint, Map<String, dynamic>? headers) async {
+    try {
+      return await _dio.delete(endpoint, options: Options(headers: headers));
+    } on DioError catch (e) {
+      throw Exception("Failed to Post:$e");
+    }
+  }
 }
