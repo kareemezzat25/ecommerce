@@ -27,7 +27,11 @@ class CartRepoImpl extends CartRepo {
   Future<Either<CartResponseModel, Failures>> getCartProducts() async {
     try {
       var result = await cartRemoteDs.getCartProducts();
-      return Left(result);
+      if (result.status == "success") {
+        return Left(result);
+      } else {
+        return Right(RemoteFailures("Failed to fetch cart products"));
+      }
     } catch (e) {
       return Right(RemoteFailures(
           "SomeThing Went Wrong When Fetch Products That Exist In Cart"));
@@ -45,6 +49,22 @@ class CartRepoImpl extends CartRepo {
     } catch (e) {
       return Right(
           RemoteFailures("SomeThing Went Wrong When Remove Product From Cart"));
+    }
+  }
+
+  @override
+  Future<Either<Map<String, dynamic>, Failures>> removeCartProducts() async {
+    try {
+      var result = await cartRemoteDs.removeCartproducts();
+
+      if (result['statusMsg'] == "success") {
+        return Left(result);
+      } else {
+        return Right(RemoteFailures(result['message']));
+      }
+    } catch (e) {
+      return Right(RemoteFailures(
+          "SomeThing Went Wrong When Remove Products From Cart"));
     }
   }
 }

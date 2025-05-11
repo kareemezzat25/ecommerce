@@ -4,6 +4,7 @@ import 'package:ecommerce_app/features/auth/presentation/bloc/bloc/auth_bloc_blo
 import 'package:ecommerce_app/features/cart/data/models/cartresponse.dart';
 import 'package:ecommerce_app/features/cart/domain/usecases/addtocart_usecase.dart';
 import 'package:ecommerce_app/features/cart/domain/usecases/getcartproducts_usecase.dart';
+import 'package:ecommerce_app/features/cart/domain/usecases/removecartproducts_usecase.dart';
 import 'package:ecommerce_app/features/cart/domain/usecases/removeproductfromcart_usecase.dart';
 import 'package:injectable/injectable.dart';
 
@@ -15,8 +16,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   AddToCartUseCase addToCartUseCase;
   GetCartProductsUseCase getCartProductsUseCase;
   RemoveProductFromCartUseCase removeProductFromCartUseCase;
+  RemoveCartProductsUseCase removeCartProductsUseCase;
   CartBloc(this.addToCartUseCase, this.getCartProductsUseCase,
-      this.removeProductFromCartUseCase)
+      this.removeProductFromCartUseCase, this.removeCartProductsUseCase)
       : super(CartInitial()) {
     on<CartEvent>((event, emit) {
       // TODO: implement event handler
@@ -63,6 +65,21 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         emit(state.copyWith(
             removeProductCartRequestState: RequestState.error,
             removeProductCartFailures: error));
+      });
+    });
+    on<RemoveCartEvent>((event, emit) async {
+      emit(state.copyWith(removeCartRequestState: RequestState.loading));
+      var result = await removeCartProductsUseCase.call();
+
+      result.fold((data) {
+        emit(state.copyWith(
+            removeCartRequestState: RequestState.success,
+            removeCartResponse: data));
+        add(GetCartProductsEvent());
+      }, (error) {
+        emit(state.copyWith(
+            removeCartRequestState: RequestState.error,
+            removeCartFailures: error));
       });
     });
   }

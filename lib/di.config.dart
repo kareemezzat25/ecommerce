@@ -26,6 +26,7 @@ import 'features/cart/data/repository/cartrepoimpl.dart' as _i282;
 import 'features/cart/domain/repository/cartrepo.dart' as _i727;
 import 'features/cart/domain/usecases/addtocart_usecase.dart' as _i782;
 import 'features/cart/domain/usecases/getcartproducts_usecase.dart' as _i586;
+import 'features/cart/domain/usecases/removecartproducts_usecase.dart' as _i60;
 import 'features/cart/domain/usecases/removeproductfromcart_usecase.dart'
     as _i548;
 import 'features/cart/presentation/bloc/bloc/cart_bloc.dart' as _i766;
@@ -117,6 +118,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i586.GetCartProductsUseCase(gh<_i727.CartRepo>()));
     gh.factory<_i548.RemoveProductFromCartUseCase>(
         () => _i548.RemoveProductFromCartUseCase(gh<_i727.CartRepo>()));
+    gh.factory<_i60.RemoveCartProductsUseCase>(
+        () => _i60.RemoveCartProductsUseCase(gh<_i727.CartRepo>()));
     gh.factory<_i925.SigninUsecase>(
         () => _i925.SigninUsecase(gh<_i38.AuthRepo>()));
     gh.factory<_i100.SignupUsecase>(
@@ -139,13 +142,14 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i592.SubCategoriesUseCase(gh<_i661.SubCategoriesRepo>()));
     gh.factory<_i597.SpecificCategoryUseCase>(
         () => _i597.SpecificCategoryUseCase(gh<_i661.SubCategoriesRepo>()));
+    gh.factory<_i102.ProductDetailsBloc>(
+        () => _i102.ProductDetailsBloc(gh<_i813.ProductDetailsUseCase>()));
     gh.factory<_i766.CartBloc>(() => _i766.CartBloc(
           gh<_i782.AddToCartUseCase>(),
           gh<_i586.GetCartProductsUseCase>(),
           gh<_i548.RemoveProductFromCartUseCase>(),
+          gh<_i60.RemoveCartProductsUseCase>(),
         ));
-    gh.factory<_i102.ProductDetailsBloc>(
-        () => _i102.ProductDetailsBloc(gh<_i813.ProductDetailsUseCase>()));
     gh.factory<_i32.CategoriesBlocBloc>(() => _i32.CategoriesBlocBloc(
           gh<_i133.CategoriesUsecase>(),
           gh<_i592.SubCategoriesUseCase>(),

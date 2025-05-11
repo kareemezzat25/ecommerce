@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:dio/dio.dart';
 import 'package:ecommerce_app/core/api/api_manager.dart';
 import 'package:ecommerce_app/core/resources/app_cache.dart';
 import 'package:ecommerce_app/core/resources/endpoints.dart';
@@ -25,10 +28,12 @@ class CartRemoteDsImpl extends CartRemoteDs {
     String? token = AppCache.getToken();
     var result =
         await apiManager.getData(AppEndpoints.cart, headers: {"token": token});
+    log("API Response: ${result.data}");
 
     CartResponseModel cartResponseModel =
         CartResponseModel.fromJson(result.data);
 
+    log("bbbb: Number of items in cart: ${cartResponseModel.data?.products?.length ?? 0}");
     return cartResponseModel;
   }
 
@@ -44,5 +49,45 @@ class CartRemoteDsImpl extends CartRemoteDs {
         CartResponseModel.fromJson(result.data);
 
     return cartResponseModel;
+  }
+
+  @override
+  Future<Map<String, dynamic>> removeCartproducts() async {
+    var token = AppCache.getToken();
+
+    try {
+      Response response =
+          await apiManager.deleteData(AppEndpoints.cart, {"token": token});
+
+      if (response.statusCode == 200) {
+        if (response.data['message'] == 'success') {
+          return {
+            'statusMsg': 'success',
+            'message': 'Item removed from cart successfully',
+          };
+        } else {
+          return {
+            'statusMsg': 'fail',
+            'message': response.data['message'] ?? 'Unexpected error occurred',
+          };
+        }
+      } else {
+        return {
+          'statusMsg': 'fail',
+          'message':
+              'Failed to remove item. Status code: ${response.statusCode}',
+        };
+      }
+    } on DioError catch (e) {
+      return {
+        'statusMsg': 'fail',
+        'message': 'Error occurred: ${e.message}',
+      };
+    } catch (e) {
+      return {
+        'statusMsg': 'fail',
+        'message': 'Unexpected error occurred: $e',
+      };
+    }
   }
 }

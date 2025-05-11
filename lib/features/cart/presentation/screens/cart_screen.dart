@@ -21,6 +21,8 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   bool _isDialogVisible = false;
+  bool _snackbarShown = false;
+  bool _dialogShown = false;
 
   void _showLoadingDialog() {
     _isDialogVisible = true;
@@ -51,11 +53,13 @@ class _CartScreenState extends State<CartScreen> {
         listener: (context, state) {
           final isLoading =
               state.getCartProductsRequestState == RequestState.loading ||
-                  state.removeProductCartRequestState == RequestState.loading;
+                  state.removeProductCartRequestState == RequestState.loading ||
+                  state.removeCartRequestState == RequestState.loading;
 
           final isDone =
               state.getCartProductsRequestState != RequestState.loading &&
-                  state.removeProductCartRequestState != RequestState.loading;
+                  state.removeProductCartRequestState != RequestState.loading &&
+                  state.removeCartRequestState != RequestState.loading;
 
           if (isLoading && !_isDialogVisible) {
             _showLoadingDialog();
@@ -63,95 +67,60 @@ class _CartScreenState extends State<CartScreen> {
             _closeDialogIfOpen();
           }
 
-          // Handle specific success
-          if (state.removeProductCartRequestState == RequestState.success) {
-            if (state.getCartProductsRequestState == RequestState.loading ||
-                state.removeProductCartRequestState == RequestState.loading) {
-              if (!_isDialogVisible) {
-                _showLoadingDialog();
-              }
-            }
-            // Handle success states and close dialog
-            else if (state.getCartProductsRequestState ==
-                    RequestState.success ||
-                state.removeProductCartRequestState == RequestState.success) {
-              if (_isDialogVisible) {
-                _closeDialogIfOpen();
-              }
+          // Handle successful product removal
+          if (state.removeCartRequestState == RequestState.success &&
+              !_snackbarShown) {
+            _snackbarShown = true;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Product Removed from Cart!",
+                    style: getMediumStyle(color: ColorManager.white)),
+                backgroundColor: ColorManager.primary,
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
 
-              // Show dialog when a product is removed from the cart
-              if (state.removeProductCartRequestState == RequestState.success) {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text("Product Removed",
-                          style: getBoldStyle(
-                              color: ColorManager.primary,
-                              fontSize: FontSize.s20)),
-                      content: Text("Item removed from Cart successfully",
-                          style: getMediumStyle(color: ColorManager.black)),
-                      actions: [
-                        ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorManager.primary,
-                            padding: const EdgeInsets.all(8),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.r)),
-                          ),
-                          child: Text("Ok",
-                              style: getBoldStyle(
-                                  color: ColorManager.white,
-                                  fontSize: AppSize.s20)),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              }
-            }
-            // Handle error states
-            else if (state.getCartProductsRequestState == RequestState.error ||
-                state.removeProductCartRequestState == RequestState.error) {
-              if (_isDialogVisible) {
-                _closeDialogIfOpen();
-              }
-
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text(
-                      "Error",
+          // Show error dialog on failure (only once)
+          if ((state.getCartProductsRequestState == RequestState.error ||
+                  state.removeProductCartRequestState == RequestState.error ||
+                  state.removeCartRequestState == RequestState.error) &&
+              !_dialogShown) {
+            _dialogShown = true; // Block further dialogs
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("Error",
                       style: getBoldStyle(
-                          color: ColorManager.primary, fontSize: AppSize.s20),
-                    ),
-                    content: Text(
+                          color: ColorManager.primary, fontSize: AppSize.s20)),
+                  content: Text(
                       state.getCartProductsFailure?.message ??
+                          state.removeProductCartFailures?.message ??
+                          state.removeCartFailures?.message ??
                           "Something went wrong",
-                      style: getMediumStyle(color: ColorManager.black),
-                    ),
-                    actions: [
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorManager.primary,
-                          padding: const EdgeInsets.all(8),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.r)),
-                        ),
-                        child: Text(
-                          "Ok",
-                          style: getBoldStyle(
-                              color: ColorManager.white, fontSize: AppSize.s20),
-                        ),
+                      style: getMediumStyle(color: ColorManager.black)),
+                  actions: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _dialogShown =
+                            false; // Reset flag when dialog is dismissed
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ColorManager.primary,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.r)),
                       ),
-                    ],
-                  );
-                },
-              );
-            }
+                      child: Text("OK",
+                          style: getBoldStyle(
+                              color: ColorManager.white,
+                              fontSize: AppSize.s20)),
+                    ),
+                  ],
+                );
+              },
+            );
           }
         },
         builder: (context, state) {
@@ -174,6 +143,14 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                 ),
                 IconButton(
+                    onPressed: () {
+                      BlocProvider.of<CartBloc>(context).add(RemoveCartEvent());
+                    },
+                    icon: ImageIcon(
+                      const AssetImage(IconsAssets.icDelete),
+                      color: ColorManager.primary,
+                    )),
+                IconButton(
                   onPressed: () {},
                   icon: Badge(
                     label: Text(
@@ -188,71 +165,76 @@ class _CartScreenState extends State<CartScreen> {
             ),
             body: Padding(
               padding: const EdgeInsets.all(AppPadding.p14),
-              child: state.getCartProductsResponseModel?.numOfCartItems == 0
-                  ? Center(
-                      child: Text(
-                        "Your cart is empty!",
-                        style: getBoldStyle(
-                            fontSize: FontSize.s24, color: Colors.black),
-                      ),
-                    )
-                  : Column(
-                      children: [
-                        Expanded(
-                          // the list of cart items ===============
-                          child: ListView.separated(
-                            itemBuilder: (context, index) => CartItemWidget(
-                              imagePath: state
-                                      .getCartProductsResponseModel
-                                      ?.data
-                                      .products[index]
-                                      .product
-                                      .imageCover ??
-                                  "",
-                              title: state.getCartProductsResponseModel?.data
-                                      .products[index].product.title ??
-                                  "",
-                              price: (state.getCartProductsResponseModel?.data
-                                          .products[index].price ??
+              child:
+                  (state.getCartProductsResponseModel?.numOfCartItems ?? 0) == 0
+                      ? Center(
+                          child: Text(
+                            "Your cart is empty!",
+                            style: getBoldStyle(
+                                fontSize: FontSize.s24, color: Colors.black),
+                          ),
+                        )
+                      : Column(
+                          children: [
+                            Expanded(
+                              // the list of cart items ===============
+                              child: ListView.separated(
+                                itemBuilder: (context, index) => CartItemWidget(
+                                  imagePath: state
+                                          .getCartProductsResponseModel
+                                          ?.data
+                                          ?.products?[index]
+                                          .product
+                                          ?.imageCover ??
+                                      "",
+                                  title: state
+                                          .getCartProductsResponseModel
+                                          ?.data
+                                          ?.products?[index]
+                                          .product
+                                          ?.title ??
+                                      "",
+                                  price: (state.getCartProductsResponseModel
+                                              ?.data?.products?[index].price ??
+                                          0)
+                                      .toDouble(),
+                                  quantity: state.getCartProductsResponseModel
+                                          ?.data?.products?[index].count ??
+                                      0,
+                                  onDeleteTap: () {
+                                    BlocProvider.of<CartBloc>(context).add(
+                                        RemoveProductCartEvent(state
+                                                .getCartProductsResponseModel
+                                                ?.data
+                                                ?.products?[index]
+                                                .product
+                                                ?.id ??
+                                            ""));
+                                  },
+                                  onDecrementTap: (value) {},
+                                  onIncrementTap: (value) {},
+                                  size: 40,
+                                  color: Colors.black,
+                                  colorName: 'Black',
+                                ),
+                                separatorBuilder: (context, index) =>
+                                    SizedBox(height: AppSize.s12.h),
+                                itemCount: state.getCartProductsResponseModel
+                                        ?.numOfCartItems ??
+                                    0,
+                              ),
+                            ),
+                            // the total price and checkout button========
+                            TotalPriceAndCheckoutBotton(
+                              totalPrice: (state.getCartProductsResponseModel
+                                          ?.data?.totalCartPrice ??
                                       0)
                                   .toDouble(),
-                              quantity: state.getCartProductsResponseModel?.data
-                                      .products[index].count ??
-                                  0,
-                              onDeleteTap: () {
-                                BlocProvider.of<CartBloc>(context).add(
-                                    RemoveProductCartEvent(state
-                                            .getCartProductsResponseModel
-                                            ?.data
-                                            .products[index]
-                                            .product
-                                            .id ??
-                                        ""));
-                              },
-                              onDecrementTap: (value) {},
-                              onIncrementTap: (value) {},
-                              size: 40,
-                              color: Colors.black,
-                              colorName: 'Black',
+                              checkoutButtonOnTap: () {},
                             ),
-                            separatorBuilder: (context, index) =>
-                                SizedBox(height: AppSize.s12.h),
-                            itemCount: state.getCartProductsResponseModel
-                                    ?.numOfCartItems ??
-                                0,
-                          ),
+                            SizedBox(height: 10.h),
+                          ],
                         ),
-                        // the total price and checkout button========
-                        TotalPriceAndCheckoutBotton(
-                          totalPrice: (state.getCartProductsResponseModel?.data
-                                      .totalCartPrice ??
-                                  0)
-                              .toDouble(),
-                          checkoutButtonOnTap: () {},
-                        ),
-                        SizedBox(height: 10.h),
-                      ],
-                    ),
             ),
           );
         },

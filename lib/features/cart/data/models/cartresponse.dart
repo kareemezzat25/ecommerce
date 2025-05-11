@@ -1,148 +1,212 @@
 class CartResponseModel {
-  final String status;
-  final int numOfCartItems;
-  final String cartId;
-  final CartData data;
+  String? status;
+  int? numOfCartItems;
+  String? cartId;
+  Data? data;
 
-  CartResponseModel({
-    required this.status,
-    required this.numOfCartItems,
-    required this.cartId,
-    required this.data,
-  });
+  CartResponseModel({this.status, this.numOfCartItems, this.cartId, this.data});
 
-  factory CartResponseModel.fromJson(Map<String, dynamic> json) =>
-      CartResponseModel(
-        status: json['status'],
-        numOfCartItems: json['numOfCartItems'],
-        cartId: json['cartId'],
-        data: CartData.fromJson(json['data']),
-      );
+  CartResponseModel.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    numOfCartItems = json['numOfCartItems'];
+    cartId = json['cartId'];
+    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['numOfCartItems'] = this.numOfCartItems;
+    data['cartId'] = this.cartId;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
+    }
+    return data;
+  }
 }
 
-class CartData {
-  final String id;
-  final String cartOwner;
-  final List<CartProduct> products;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final int totalCartPrice;
+class Data {
+  String? sId;
+  String? cartOwner;
+  List<Products>? products;
+  String? createdAt;
+  String? updatedAt;
+  int? iV;
+  int? totalCartPrice;
 
-  CartData({
-    required this.id,
-    required this.cartOwner,
-    required this.products,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.totalCartPrice,
-  });
+  Data(
+      {this.sId,
+      this.cartOwner,
+      this.products,
+      this.createdAt,
+      this.updatedAt,
+      this.iV,
+      this.totalCartPrice});
 
-  factory CartData.fromJson(Map<String, dynamic> json) => CartData(
-        id: json['_id'],
-        cartOwner: json['cartOwner'],
-        products: (json['products'] as List)
-            .map((e) => CartProduct.fromJson(e))
-            .toList(),
-        createdAt: DateTime.parse(json['createdAt']),
-        updatedAt: DateTime.parse(json['updatedAt']),
-        totalCartPrice: json['totalCartPrice'],
-      );
+  Data.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    cartOwner = json['cartOwner'];
+    if (json['products'] != null) {
+      products = <Products>[];
+      json['products'].forEach((v) {
+        products!.add(new Products.fromJson(v));
+      });
+    }
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+    iV = json['__v'];
+    totalCartPrice = json['totalCartPrice'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['cartOwner'] = this.cartOwner;
+    if (this.products != null) {
+      data['products'] = this.products!.map((v) => v.toJson()).toList();
+    }
+    data['createdAt'] = this.createdAt;
+    data['updatedAt'] = this.updatedAt;
+    data['__v'] = this.iV;
+    data['totalCartPrice'] = this.totalCartPrice;
+    return data;
+  }
 }
 
-class CartProduct {
-  final int count;
-  final String id;
-  final Product product;
-  final int price;
+class Products {
+  int? count;
+  String? sId;
+  Product? product;
+  int? price;
 
-  CartProduct({
-    required this.count,
-    required this.id,
-    required this.product,
-    required this.price,
-  });
+  Products({this.count, this.sId, this.product, this.price});
 
-  factory CartProduct.fromJson(Map<String, dynamic> json) => CartProduct(
-        count: json['count'],
-        id: json['_id'],
-        product: Product.fromJson(json['product']),
-        price: json['price'],
-      );
+  Products.fromJson(Map<String, dynamic> json) {
+    count = json['count'];
+    sId = json['_id'];
+    product =
+        json['product'] != null ? new Product.fromJson(json['product']) : null;
+    price = json['price'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['count'] = this.count;
+    data['_id'] = this.sId;
+    if (this.product != null) {
+      data['product'] = this.product!.toJson();
+    }
+    data['price'] = this.price;
+    return data;
+  }
 }
 
 class Product {
-  final List<Subcategory> subcategory;
-  final String id;
-  final String title;
-  final int quantity;
-  final String imageCover;
-  final Category category;
-  final dynamic brand;
-  final double ratingsAverage;
+  List<Subcategory>? subcategory;
+  String? sId;
+  String? title;
+  int? quantity;
+  String? imageCover;
+  Category? category;
+  Null? brand;
+  double? ratingsAverage;
+  String? id;
 
-  Product({
-    required this.subcategory,
-    required this.id,
-    required this.title,
-    required this.quantity,
-    required this.imageCover,
-    required this.category,
-    this.brand,
-    required this.ratingsAverage,
-  });
+  Product(
+      {this.subcategory,
+      this.sId,
+      this.title,
+      this.quantity,
+      this.imageCover,
+      this.category,
+      this.brand,
+      this.ratingsAverage,
+      this.id});
 
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
-        subcategory: (json['subcategory'] as List)
-            .map((e) => Subcategory.fromJson(e))
-            .toList(),
-        id: json['_id'],
-        title: json['title'],
-        quantity: json['quantity'],
-        imageCover: json['imageCover'],
-        category: Category.fromJson(json['category']),
-        brand: json['brand'],
-        ratingsAverage: json['ratingsAverage'].toDouble(),
-      );
+  Product.fromJson(Map<String, dynamic> json) {
+    if (json['subcategory'] != null) {
+      subcategory = <Subcategory>[];
+      json['subcategory'].forEach((v) {
+        subcategory!.add(new Subcategory.fromJson(v));
+      });
+    }
+    sId = json['_id'];
+    title = json['title'];
+    quantity = json['quantity'];
+    imageCover = json['imageCover'];
+    category = json['category'] != null
+        ? new Category.fromJson(json['category'])
+        : null;
+    brand = json['brand'];
+    ratingsAverage = json['ratingsAverage'];
+    id = json['id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.subcategory != null) {
+      data['subcategory'] = this.subcategory!.map((v) => v.toJson()).toList();
+    }
+    data['_id'] = this.sId;
+    data['title'] = this.title;
+    data['quantity'] = this.quantity;
+    data['imageCover'] = this.imageCover;
+    if (this.category != null) {
+      data['category'] = this.category!.toJson();
+    }
+    data['brand'] = this.brand;
+    data['ratingsAverage'] = this.ratingsAverage;
+    data['id'] = this.id;
+    return data;
+  }
 }
 
 class Subcategory {
-  final String id;
-  final String name;
-  final String slug;
-  final String category;
+  String? sId;
+  String? name;
+  String? slug;
+  String? category;
 
-  Subcategory({
-    required this.id,
-    required this.name,
-    required this.slug,
-    required this.category,
-  });
+  Subcategory({this.sId, this.name, this.slug, this.category});
 
-  factory Subcategory.fromJson(Map<String, dynamic> json) => Subcategory(
-        id: json['_id'],
-        name: json['name'],
-        slug: json['slug'],
-        category: json['category'],
-      );
+  Subcategory.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    name = json['name'];
+    slug = json['slug'];
+    category = json['category'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['name'] = this.name;
+    data['slug'] = this.slug;
+    data['category'] = this.category;
+    return data;
+  }
 }
 
 class Category {
-  final String id;
-  final String name;
-  final String slug;
-  final String image;
+  String? sId;
+  String? name;
+  String? slug;
+  String? image;
 
-  Category({
-    required this.id,
-    required this.name,
-    required this.slug,
-    required this.image,
-  });
+  Category({this.sId, this.name, this.slug, this.image});
 
-  factory Category.fromJson(Map<String, dynamic> json) => Category(
-        id: json['_id'],
-        name: json['name'],
-        slug: json['slug'],
-        image: json['image'],
-      );
+  Category.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    name = json['name'];
+    slug = json['slug'];
+    image = json['image'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['name'] = this.name;
+    data['slug'] = this.slug;
+    data['image'] = this.image;
+    return data;
+  }
 }

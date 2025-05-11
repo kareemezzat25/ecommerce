@@ -8,4 +8,5 @@ abstract class CartRepo {
   Future<Either<CartResponseModel, Failures>> getCartProducts();
   Future<Either<CartResponseModel, Failures>> removeProductFromCart(
       {required String productId});
+  Future<Either<Map<String, dynamic>, Failures>> removeCartProducts();
 }
