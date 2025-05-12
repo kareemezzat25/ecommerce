@@ -44,6 +44,18 @@ import 'features/main_layout/categories/domain/usecases/subCategories_usecase.da
     as _i592;
 import 'features/main_layout/categories/presentation/bloc/bloc/categories_bloc_bloc.dart'
     as _i32;
+import 'features/main_layout/favourite/data/datasources/remote/favouritesremoteds.dart'
+    as _i950;
+import 'features/main_layout/favourite/data/datasources/remote/favouritesremotedsImpl.dart'
+    as _i193;
+import 'features/main_layout/favourite/data/repository/favouritesrepoImpl.dart'
+    as _i34;
+import 'features/main_layout/favourite/domain/repository/favouritesrepo.dart'
+    as _i816;
+import 'features/main_layout/favourite/domain/usecases/getfavourites_usecase.dart'
+    as _i752;
+import 'features/main_layout/favourite/presentation/bloc/bloc/favourites_bloc.dart'
+    as _i708;
 import 'features/main_layout/home/data/datasources/remote/homeremote_ds.dart'
     as _i545;
 import 'features/main_layout/home/data/datasources/remote/homeremotedsimpl.dart'
@@ -94,6 +106,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i567.CartRemoteDs>(() => _i1043.CartRemoteDsImpl());
     gh.factory<_i53.AuthRemoteDs>(
         () => _i589.AuthRemoteDsImpl(apimanager: gh<_i237.ApiManager>()));
+    gh.factory<_i950.FavouritesRemoteDs>(
+        () => _i193.FavouritesRemoteDsImpl(gh<_i237.ApiManager>()));
     gh.factory<_i352.CategoriesRemoteDs>(
         () => _i172.CategoriesRemoteDsImpl(gh<_i237.ApiManager>()));
     gh.factory<_i545.HomeRemoteDs>(
@@ -104,12 +118,18 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i296.HomeRepoImpl(gh<_i545.HomeRemoteDs>()));
     gh.factory<_i727.CartRepo>(
         () => _i282.CartRepoImpl(gh<_i567.CartRemoteDs>()));
+    gh.factory<_i816.FavouritesRepo>(
+        () => _i34.FavouritesRepoImpl(gh<_i950.FavouritesRemoteDs>()));
     gh.factory<_i452.ProductDetailsRemoteDs>(
         () => _i297.ProductDetailsRemoteDsImpl(gh<_i237.ApiManager>()));
     gh.factory<_i770.GetProductRepo>(
         () => _i588.GetProductRepoImpl(gh<_i368.GetProductsRemoteDs>()));
     gh.factory<_i661.SubCategoriesRepo>(
         () => _i225.SubCategoriesRepoImpl(gh<_i352.CategoriesRemoteDs>()));
+    gh.factory<_i752.GetFavouritesUseCase>(
+        () => _i752.GetFavouritesUseCase(gh<_i816.FavouritesRepo>()));
+    gh.factory<_i708.FavouritesBloc>(
+        () => _i708.FavouritesBloc(gh<_i752.GetFavouritesUseCase>()));
     gh.factory<_i38.AuthRepo>(
         () => _i866.AuthRepoImpl(authRemoteDs: gh<_i53.AuthRemoteDs>()));
     gh.factory<_i782.AddToCartUseCase>(

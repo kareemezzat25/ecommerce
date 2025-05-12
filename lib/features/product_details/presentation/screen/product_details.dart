@@ -23,6 +23,11 @@ class ProductDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (productId == null) {
+      return const Scaffold(
+        body: Center(child: Text('Product ID is missing')),
+      );
+    }
     return BlocProvider(
       create: (context) =>
           getIt<ProductDetailsBloc>()..add(GetProductDetailsEvent(productId!)),

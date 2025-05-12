@@ -28,12 +28,10 @@ class CartRemoteDsImpl extends CartRemoteDs {
     String? token = AppCache.getToken();
     var result =
         await apiManager.getData(AppEndpoints.cart, headers: {"token": token});
-    log("API Response: ${result.data}");
 
     CartResponseModel cartResponseModel =
         CartResponseModel.fromJson(result.data);
 
-    log("bbbb: Number of items in cart: ${cartResponseModel.data?.products?.length ?? 0}");
     return cartResponseModel;
   }
 

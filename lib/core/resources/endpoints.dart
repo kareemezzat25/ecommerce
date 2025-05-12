@@ -20,4 +20,6 @@ class AppEndpoints {
   static String removeItemFromCart(String productId) {
     return "/api/v1/cart/$productId";
   }
+
+  static const String getUserFavourites = "/api/v1/wishlist";
 }
