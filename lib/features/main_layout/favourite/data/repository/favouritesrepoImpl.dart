@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:ecommerce_app/core/failures/failures.dart';
 import 'package:ecommerce_app/core/failures/remotefailures.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/data/datasources/remote/favouritesremoteds.dart';
+import 'package:ecommerce_app/features/main_layout/favourite/data/models/adddeletefavourite_model.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/data/models/favourite_model.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/domain/repository/favouritesrepo.dart';
 import 'package:injectable/injectable.dart';
@@ -19,6 +20,19 @@ class FavouritesRepoImpl extends FavouritesRepo {
     } catch (e) {
       return Right(RemoteFailures(
           "SomeThing Went Wrong When Fetch Data of Your Favourites"));
+    }
+  }
+
+  @override
+  Future<Either<AddDeleteFavouriteModel, Failures>> addProductFavourite(
+      {required String productId}) async {
+    try {
+      var result =
+          await favouritesRemoteDs.addPrdouctFavourite(productId: productId);
+      return Left(result);
+    } catch (e) {
+      return Right(RemoteFailures(
+          "SomeThing Went Wrong When Add Product in Favourite wishlist"));
     }
   }
 }

@@ -1,10 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:ecommerce_app/core/failures/failures.dart';
 import 'package:ecommerce_app/features/auth/presentation/bloc/bloc/auth_bloc_bloc.dart';
+import 'package:ecommerce_app/features/main_layout/favourite/data/models/adddeletefavourite_model.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/data/models/favourite_model.dart';
+import 'package:ecommerce_app/features/main_layout/favourite/domain/usecases/addproductfavourite_usecase.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/domain/usecases/getfavourites_usecase.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
 
 part 'favourites_event.dart';
 part 'favourites_state.dart';
@@ -12,7 +13,9 @@ part 'favourites_state.dart';
 @injectable
 class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   GetFavouritesUseCase getFavouritesUseCase;
-  FavouritesBloc(this.getFavouritesUseCase) : super(FavouritesInitial()) {
+  AddProductFavouritesUseCase addProductFavouritesUseCase;
+  FavouritesBloc(this.getFavouritesUseCase, this.addProductFavouritesUseCase)
+      : super(FavouritesInitial()) {
     on<FavouritesEvent>((event, emit) {});
     on<GetUserFavouritesEvent>((event, emit) async {
       emit(state.copywith(getUserFavouritesRequestState: RequestState.loading));
@@ -26,6 +29,23 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
         emit(state.copywith(
             getUserFavouritesRequestState: RequestState.error,
             getUserFavouriteFailures: error));
+      });
+    });
+    on<AddProductToFavouritesEvent>((event, emit) async {
+      emit(state.copywith(
+          addProductToFavouriteRequestState: RequestState.loading));
+
+      var result =
+          await addProductFavouritesUseCase.call(productId: event.productId);
+
+      result.fold((model) {
+        emit(state.copywith(
+            addProductToFavouriteRequestState: RequestState.success,
+            addProductToFavouritesModel: model));
+      }, (error) {
+        emit(state.copywith(
+            addProductToFavouriteRequestState: RequestState.error,
+            addProductToFavouritesFailures: error));
       });
     });
   }

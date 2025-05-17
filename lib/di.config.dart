@@ -52,6 +52,8 @@ import 'features/main_layout/favourite/data/repository/favouritesrepoImpl.dart'
     as _i34;
 import 'features/main_layout/favourite/domain/repository/favouritesrepo.dart'
     as _i816;
+import 'features/main_layout/favourite/domain/usecases/addproductfavourite_usecase.dart'
+    as _i581;
 import 'features/main_layout/favourite/domain/usecases/getfavourites_usecase.dart'
     as _i752;
 import 'features/main_layout/favourite/presentation/bloc/bloc/favourites_bloc.dart'
@@ -128,8 +130,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i225.SubCategoriesRepoImpl(gh<_i352.CategoriesRemoteDs>()));
     gh.factory<_i752.GetFavouritesUseCase>(
         () => _i752.GetFavouritesUseCase(gh<_i816.FavouritesRepo>()));
-    gh.factory<_i708.FavouritesBloc>(
-        () => _i708.FavouritesBloc(gh<_i752.GetFavouritesUseCase>()));
+    gh.factory<_i581.AddProductFavouritesUseCase>(
+        () => _i581.AddProductFavouritesUseCase(gh<_i816.FavouritesRepo>()));
     gh.factory<_i38.AuthRepo>(
         () => _i866.AuthRepoImpl(authRemoteDs: gh<_i53.AuthRemoteDs>()));
     gh.factory<_i782.AddToCartUseCase>(
@@ -150,6 +152,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i784.GetProductsUseCase(gh<_i770.GetProductRepo>()));
     gh.factory<_i133.CategoriesUsecase>(
         () => _i133.CategoriesUsecase(gh<_i118.HomeRepo>()));
+    gh.factory<_i708.FavouritesBloc>(() => _i708.FavouritesBloc(
+          gh<_i752.GetFavouritesUseCase>(),
+          gh<_i581.AddProductFavouritesUseCase>(),
+        ));
     gh.factory<_i215.ProductsBloc>(
         () => _i215.ProductsBloc(gh<_i784.GetProductsUseCase>()));
     gh.factory<_i813.ProductDetailsUseCase>(

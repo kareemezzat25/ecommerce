@@ -5,6 +5,7 @@ import 'package:ecommerce_app/core/resources/styles_manager.dart';
 import 'package:ecommerce_app/core/resources/values_manager.dart';
 import 'package:ecommerce_app/di.dart';
 import 'package:ecommerce_app/features/auth/presentation/bloc/bloc/auth_bloc_bloc.dart';
+import 'package:ecommerce_app/features/cart/presentation/bloc/bloc/cart_bloc.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/data/models/favourite_model.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/presentation/bloc/bloc/favourites_bloc.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/presentation/widgets/favourite_item.dart';
@@ -17,9 +18,16 @@ class FavouriteScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          getIt<FavouritesBloc>()..add(GetUserFavouritesEvent()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<FavouritesBloc>(
+          create: (context) =>
+              getIt<FavouritesBloc>()..add(GetUserFavouritesEvent()),
+        ),
+        BlocProvider<CartBloc>(
+          create: (context) => getIt<CartBloc>(),
+        )
+      ],
       child: BlocConsumer<FavouritesBloc, FavouritesState>(
         listener: (context, state) {
           if (state.getUserFavouritesRequestState == RequestState.loading) {

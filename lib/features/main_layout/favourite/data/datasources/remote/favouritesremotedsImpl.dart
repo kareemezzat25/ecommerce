@@ -2,6 +2,7 @@ import 'package:ecommerce_app/core/api/api_manager.dart';
 import 'package:ecommerce_app/core/resources/app_cache.dart';
 import 'package:ecommerce_app/core/resources/endpoints.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/data/datasources/remote/favouritesremoteds.dart';
+import 'package:ecommerce_app/features/main_layout/favourite/data/models/adddeletefavourite_model.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/data/models/favourite_model.dart';
 import 'package:injectable/injectable.dart';
 
@@ -18,5 +19,18 @@ class FavouritesRemoteDsImpl extends FavouritesRemoteDs {
 
     FavouriteModel favouriteModel = FavouriteModel.fromJson(result.data);
     return favouriteModel;
+  }
+
+  @override
+  Future<AddDeleteFavouriteModel> addPrdouctFavourite(
+      {required String productId}) async {
+    var token = AppCache.getToken();
+
+    var result = await apiManager.postData(
+        AppEndpoints.getUserFavourites, {"productId": productId},
+        headers: {"token": token});
+    AddDeleteFavouriteModel addFavouriteModel =
+        AddDeleteFavouriteModel.fromJson(result.data);
+    return addFavouriteModel;
   }
 }
