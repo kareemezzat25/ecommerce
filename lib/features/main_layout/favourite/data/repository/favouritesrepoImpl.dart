@@ -28,11 +28,24 @@ class FavouritesRepoImpl extends FavouritesRepo {
       {required String productId}) async {
     try {
       var result =
-          await favouritesRemoteDs.addPrdouctFavourite(productId: productId);
+          await favouritesRemoteDs.addProductFavourite(productId: productId);
       return Left(result);
     } catch (e) {
       return Right(RemoteFailures(
           "SomeThing Went Wrong When Add Product in Favourite wishlist"));
+    }
+  }
+
+  @override
+  Future<Either<AddDeleteFavouriteModel, Failures>> deleteProductFavourite(
+      {required String productId}) async {
+    try {
+      var result =
+          await favouritesRemoteDs.deleteProductFavourite(productId: productId);
+      return Left(result);
+    } catch (e) {
+      return Right(RemoteFailures(
+          "SomeThing Went Wrong When Delete Product From Favourites wishlist"));
     }
   }
 }

@@ -22,7 +22,7 @@ class FavouritesRemoteDsImpl extends FavouritesRemoteDs {
   }
 
   @override
-  Future<AddDeleteFavouriteModel> addPrdouctFavourite(
+  Future<AddDeleteFavouriteModel> addProductFavourite(
       {required String productId}) async {
     var token = AppCache.getToken();
 
@@ -32,5 +32,18 @@ class FavouritesRemoteDsImpl extends FavouritesRemoteDs {
     AddDeleteFavouriteModel addFavouriteModel =
         AddDeleteFavouriteModel.fromJson(result.data);
     return addFavouriteModel;
+  }
+
+  @override
+  Future<AddDeleteFavouriteModel> deleteProductFavourite(
+      {required String productId}) async {
+    var token = AppCache.getToken();
+
+    var result = await apiManager.deleteData(
+        AppEndpoints.deleteProductFavourite(productId), {"token": token});
+
+    AddDeleteFavouriteModel deleteFavouriteModel =
+        AddDeleteFavouriteModel.fromJson(result.data);
+    return deleteFavouriteModel;
   }
 }

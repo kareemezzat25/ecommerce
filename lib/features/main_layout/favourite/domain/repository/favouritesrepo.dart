@@ -7,4 +7,6 @@ abstract class FavouritesRepo {
   Future<Either<FavouriteModel, Failures>> getUserFavourites();
   Future<Either<AddDeleteFavouriteModel, Failures>> addProductFavourite(
       {required String productId});
+  Future<Either<AddDeleteFavouriteModel, Failures>> deleteProductFavourite(
+      {required String productId});
 }

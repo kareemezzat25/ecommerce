@@ -4,6 +4,7 @@ import 'package:ecommerce_app/features/auth/presentation/bloc/bloc/auth_bloc_blo
 import 'package:ecommerce_app/features/main_layout/favourite/data/models/adddeletefavourite_model.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/data/models/favourite_model.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/domain/usecases/addproductfavourite_usecase.dart';
+import 'package:ecommerce_app/features/main_layout/favourite/domain/usecases/deleteproductfavourite_usecase.dart';
 import 'package:ecommerce_app/features/main_layout/favourite/domain/usecases/getfavourites_usecase.dart';
 import 'package:injectable/injectable.dart';
 
@@ -14,7 +15,9 @@ part 'favourites_state.dart';
 class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   GetFavouritesUseCase getFavouritesUseCase;
   AddProductFavouritesUseCase addProductFavouritesUseCase;
-  FavouritesBloc(this.getFavouritesUseCase, this.addProductFavouritesUseCase)
+  DeleteProductFavouriteUseCase deleteProductFavouriteUseCase;
+  FavouritesBloc(this.getFavouritesUseCase, this.addProductFavouritesUseCase,
+      this.deleteProductFavouriteUseCase)
       : super(FavouritesInitial()) {
     on<FavouritesEvent>((event, emit) {});
     on<GetUserFavouritesEvent>((event, emit) async {
@@ -46,6 +49,22 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
         emit(state.copywith(
             addProductToFavouriteRequestState: RequestState.error,
             addProductToFavouritesFailures: error));
+      });
+    });
+    on<DeleteProductFromFavouritesEvent>((event, emit) async {
+      emit(state.copywith(
+          deleteProductFromFavouritesRequestState: RequestState.loading));
+
+      var result =
+          await deleteProductFavouriteUseCase.call(productId: event.productId);
+      result.fold((model) {
+        emit(state.copywith(
+            deleteProductFromFavouritesRequestState: RequestState.success,
+            deleteProductFromFavouritesModel: model));
+      }, (error) {
+        emit(state.copywith(
+            deleteProductFromFavouritesRequestState: RequestState.error,
+            deleteProductFromFavouritesFailures: error));
       });
     });
   }

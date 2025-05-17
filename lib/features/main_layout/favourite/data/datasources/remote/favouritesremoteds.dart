@@ -3,6 +3,8 @@ import 'package:ecommerce_app/features/main_layout/favourite/data/models/favouri
 
 abstract class FavouritesRemoteDs {
   Future<FavouriteModel> getUserFavourites();
-  Future<AddDeleteFavouriteModel> addPrdouctFavourite(
+  Future<AddDeleteFavouriteModel> addProductFavourite(
+      {required String productId});
+  Future<AddDeleteFavouriteModel> deleteProductFavourite(
       {required String productId});
 }

@@ -22,4 +22,8 @@ class AppEndpoints {
   }
 
   static const String getUserFavourites = "/api/v1/wishlist";
+
+  static String deleteProductFavourite(String productId) {
+    return "/api/v1/wishlist/$productId";
+  }
 }
